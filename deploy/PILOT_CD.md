@@ -12,14 +12,14 @@ remain separate. The private Whisper and Kokoro worker images are unchanged.
 
 - Project `phonic-weaver-475017-n1`, Cloud Run region `us-central1`.
 - Public gateway: `agenticai-columbia-pilot`, revision
-  `agenticai-columbia-pilot-00001-h68`,
+  `agenticai-columbia-pilot-00002-tz8`,
   <https://agenticai-columbia-pilot-3d4n5heeaq-uc.a.run.app>. Image digest:
-  `sha256:072faa315bffadd22c2ece886ad2b35bbf4e84c11955ccd790afe4703c9c8318`.
+  `sha256:955044e722cb6e873180c889e995ee2118979e1696ef530a9b4f7dca483948d7`.
   It runs as `agenticai-gateway-pilot@phonic-weaver-475017-n1.iam.gserviceaccount.com`
   with concurrency 2, maximum instances 2, and minimum instances 0.
 - Private backend: `agenticai-data-pilot`, revision
-  `agenticai-data-pilot-00001-5xb`. Image digest:
-  `sha256:0ab332b654f1265bf5299aa2a13b0e6a88ef79d8c12c29f11b8ada17374926e8`.
+  `agenticai-data-pilot-00002-tht`. Image digest:
+  `sha256:946950638ca49102885bfd24b073f114fd2b5d82b8412701d30a9cc14a5a990a`.
   It runs as `agenticai-app-pilot@phonic-weaver-475017-n1.iam.gserviceaccount.com`
   with concurrency 4, maximum instances 2, and minimum instances 0. Cloud SQL
   is attached to this service only.
@@ -31,9 +31,18 @@ remain separate. The private Whisper and Kokoro worker images are unchanged.
 - The existing Cloud Build trigger is in `europe-west1`; it builds and deploys
   `agenticai-git` from `gemini-test-project-1`. It is not a pilot trigger.
 - The pilot images were built from the local checkout and deployed by digest.
-  The new code remains uncommitted on local branch `feat/cricket-analyst`;
-  no pilot GitHub trigger exists. The cricket source import is still running.
-  Signed-in end-to-end cloud use has not yet been verified.
+  The public gateway currently returns `200` for `/health`, `/`, and
+  `/auth/config`; an anonymous `/sessions` request and a fake-token
+  `/voice/config` request return `401`. Signed-in end-to-end cloud use and
+  cricket source import counts still need release-gate verification.
+- A dedicated Workload Identity Federation provider and resource-scoped pilot
+  deployer permissions are configured for GitHub Actions. The workflow is
+  prepared locally but has not yet run from GitHub. The old Cloud Build trigger
+  and `agenticai-git` service remain separate.
+- Cloud Logging exclusion `agenticai-pilot-email-link-callbacks` is configured
+  to drop gateway Cloud Run request logs for `/auth/finish`, because a synthetic
+  callback probe showed its query string in those logs. Verify the exclusion
+  with a new callback probe; ordinary route request logs should remain enabled.
 
 ## Cloud SQL configuration and cost
 
@@ -74,11 +83,14 @@ unique `backend:$BUILD_ID` and `gateway:$BUILD_ID` tags. The Docker builds run
 frontend tests and produce production assets. Ignored `.local/` credentials and
 recordings are excluded from build context. The backend production Uvicorn
 process disables its own access log so one-time email-link query parameters
-are not written there. Check the gateway and Cloud Run platform request logs
-during callback validation; that flag does not control platform logs.
+are not written there. The platform request-log exclusion needs a synthetic
+callback verification because the Uvicorn flag does not control platform logs.
 
-The current full backend suite passed **246 tests, with one skipped**; the
-frontend suite passed separately. Run these checks again when code changes.
+The current full backend suite passed **246 tests, with one skipped** while
+the database test fixture was available; the frontend suite passed separately.
+Without the database proxy, a local replay passed 102 tests and skipped 145.
+The GitHub workflow uses that non-database test run and Dockerfile frontend
+tests; run authenticated database and end-to-end checks before release.
 For a new candidate from the intended checkout:
 
 ```bash
@@ -98,13 +110,14 @@ sole database client, runs `APP_ENV=pilot` and `DATA_ENDPOINT_MODE=private`,
 and verifies the Firebase token forwarded in `X-Firebase-Authorization`.
 The public gateway has no database credentials. Its `BACKEND_BASE_URL` and
 `BACKEND_AUDIENCE` point to the same private HTTPS origin, and it uses its own
-IAM token to invoke the backend. The source import is still in progress;
-complete it and verify intended table counts before testing cricket answers.
+IAM token to invoke the backend. Verify the final source import status and
+intended table counts before testing cricket answers.
 
 The public login shell and callback domain are configured. Verify a real
 Columbia sign-in, anonymous API denial, conversation isolation and persistence,
 three assignment sample queries, visible tool calls, charts, speech, gateway
-overload/cancellation behavior, and rollback before enabling the trigger.
+overload/cancellation behavior, and rollback before releasing through the
+workflow.
 Confirm the grader has a permitted Columbia mailbox or agree on grader access
 before submitting the URL. Record service revisions, image digests, runtime
 identities, endpoint URL, and rollback revisions. Check that `agenticai-git`
@@ -113,41 +126,43 @@ gateway URL and every team member's UNI or email.
 
 ## Enable continuous deployment after validation
 
-`cloudbuild.pilot-cd.yaml` builds and pushes both images, updates only the
-image of the already configured private backend, then updates only the image
-of the public gateway. Cloud Run resolves each unique tag to an immutable
-digest in its revision. The file does not set service environment, data
-credentials, ingress, or IAM. A missing service makes the build fail rather
-than creating an unconfigured public service. If gateway deployment fails
-after backend deployment, route backend traffic to its previous good revision
-before retrying.
+The release pipeline is `.github/workflows/pilot-deploy.yml` on the dedicated,
+protected `pilot-release` branch. One PR approval is required before merge;
+force pushes and deletion are blocked. A push to that branch runs backend tests,
+builds both Dockerfiles (which also run the frontend tests), and publishes
+`linux/amd64` images to the existing `agenticai-pilot` Artifact Registry
+repository. Tags combine the commit SHA, GitHub run ID, and run attempt so
+reruns cannot silently reuse a mutable tag. The workflow resolves each tag to
+an immutable image digest, updates only `agenticai-data-pilot` and then
+`agenticai-columbia-pilot`, and checks the public `/health` endpoint. It passes
+no environment, identity, ingress, Cloud SQL, or IAM flags. A missing service
+causes the update to fail rather than creating a new service. If the gateway
+update fails after the backend succeeds, roll the backend back to its previous
+good revision before retrying.
 
-Use a dedicated `pilot-release` GitHub branch. Create a separate Cloud Build
-identity with the minimum access needed to write to the `agenticai-pilot`
-Artifact Registry repository, update only these two Cloud Run services, write
-build logs, and act as their runtime service accounts. Review the exact scoped
-IAM bindings before granting them; do not reuse the legacy trigger's Compute
-Engine default service account. The already connected GitHub repository is a
-Developer Connect link in `europe-west1`, so a separate trigger can use:
+Authentication uses GitHub OIDC and Google Workload Identity Federation; no
+service-account key or GitHub secret is stored. The provider accepts only push
+events for immutable GitHub repository ID `1391460454`, owner ID `53017570`,
+`refs/heads/pilot-release`, and the exact
+`shubhampareek1211/AgenticAI/.github/workflows/pilot-deploy.yml` workflow.
+The existing `agenticai-pilot-build` account can write only to the
+`agenticai-pilot` Artifact Registry repository, has Cloud Run Developer on
+the two existing pilot services, and can act as only their two runtime service
+accounts. The prior project-level Cloud Build create and Logging Writer grants
+were removed. The old Developer Connect/Cloud Build trigger still deploys only
+the separate legacy branch and service.
 
-```bash
-gcloud beta builds triggers create developer-connect \
-  --project phonic-weaver-475017-n1 \
-  --region europe-west1 \
-  --name agenticai-columbia-pilot-cd \
-  --git-repository-link projects/phonic-weaver-475017-n1/locations/europe-west1/connections/connection-bvltgsl/gitRepositoryLinks/shubhampareek1211-AgenticAI \
-  --branch-pattern '^pilot-release$' \
-  --build-config cloudbuild.pilot-cd.yaml \
-  --service-account projects/phonic-weaver-475017-n1/serviceAccounts/PILOT_BUILD_SERVICE_ACCOUNT_EMAIL
-```
+The workflow obtains one short-lived token for registry pushes and a fresh
+federated credential for the Cloud Run updates. `gha-creds-*.json` is ignored
+by Git and excluded from Docker build contexts. After a reviewed push to
+`pilot-release`, confirm the GitHub Actions run passed and both new revisions
+contain the recorded digests. Exercise the grader queries in a fresh browser,
+then verify the legacy service traffic and IAM again. Preserve previous good
+pilot revisions for rollback and keep the pilot running until grades are
+released. GitHub Actions runner time, image storage, and Cloud Run revision
+startup can incur charges.
 
-The exact branch pattern keeps other branches, including the legacy
-deployment branch, out of this pipeline. Push a reviewed commit to
-`pilot-release`, confirm a successful triggered build and both new revisions,
-exercise the grader queries in a fresh browser, and verify the old service's
-traffic again. Preserve previous good pilot revisions for rollback. Keep the
-pilot running until grades are released.
-
-Google Cloud references: [GitHub build triggers](https://docs.cloud.google.com/build/docs/automating-builds/create-manage-triggers),
-[Cloud Build to Cloud Run deployment](https://docs.cloud.google.com/build/docs/deploying-builds/deploy-cloud-run),
-[Developer Connect trigger command](https://docs.cloud.google.com/sdk/gcloud/reference/beta/builds/triggers/create/developer-connect).
+References: [Google Workload Identity Federation](https://docs.cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines),
+[GitHub authentication action](https://github.com/google-github-actions/auth),
+[Cloud Run deployment permissions](https://docs.cloud.google.com/run/docs/deploying),
+and [Artifact Registry access control](https://docs.cloud.google.com/artifact-registry/docs/access-control).

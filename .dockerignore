@@ -4,6 +4,7 @@
 .pytest_cache
 .ruff_cache
 .env
+gha-creds-*.json
 **/__pycache__
 **/*.pyc
 frontend/node_modules

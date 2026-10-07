@@ -1,0 +1,108 @@
+name: Deploy Columbia pilot
+
+on:
+  push:
+    branches: [pilot-release]
+
+# The Google provider also checks the immutable repository IDs, branch, push
+# event, and this exact workflow path before issuing a short-lived credential.
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: columbia-pilot-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      PROJECT_ID: phonic-weaver-475017-n1
+      REGION: us-central1
+      REGISTRY_HOST: us-central1-docker.pkg.dev
+      BACKEND_IMAGE: us-central1-docker.pkg.dev/phonic-weaver-475017-n1/agenticai-pilot/backend:${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+      GATEWAY_IMAGE: us-central1-docker.pkg.dev/phonic-weaver-475017-n1/agenticai-pilot/gateway:${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+
+    steps:
+      - name: Check out release commit
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Test backend
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check uv==0.11.19
+          uv sync --frozen --dev --no-install-project
+          uv run --no-sync pytest -q
+
+      - name: Build tested Linux images
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker build --pull --platform=linux/amd64 -f deploy/app/Dockerfile -t "$BACKEND_IMAGE" .
+          docker build --pull --platform=linux/amd64 -f deploy/gateway/Dockerfile -t "$GATEWAY_IMAGE" .
+
+      - name: Authenticate for Artifact Registry push
+        id: registry-auth
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: phonic-weaver-475017-n1
+          workload_identity_provider: projects/405277086961/locations/global/workloadIdentityPools/agenticai-pilot-github/providers/pilot-release
+          service_account: agenticai-pilot-build@phonic-weaver-475017-n1.iam.gserviceaccount.com
+          token_format: access_token
+          access_token_lifetime: 3300s
+          create_credentials_file: false
+
+      - name: Push both images
+        shell: bash
+        env:
+          AR_TOKEN: ${{ steps.registry-auth.outputs.access_token }}
+        run: |
+          set -euo pipefail
+          trap 'docker logout "$REGISTRY_HOST" >/dev/null 2>&1 || true' EXIT
+          printf '%s' "$AR_TOKEN" | docker login -u oauth2accesstoken --password-stdin "$REGISTRY_HOST"
+          docker push "$BACKEND_IMAGE"
+          docker push "$GATEWAY_IMAGE"
+
+      # GitHub's source OIDC token is short lived. Obtain a fresh one after the
+      # pushes for the gcloud image lookup and service updates.
+      - name: Authenticate for Cloud Run deployment
+        uses: google-github-actions/auth@v3
+        with:
+          project_id: phonic-weaver-475017-n1
+          workload_identity_provider: projects/405277086961/locations/global/workloadIdentityPools/agenticai-pilot-github/providers/pilot-release
+          service_account: agenticai-pilot-build@phonic-weaver-475017-n1.iam.gserviceaccount.com
+
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v3
+        with:
+          project_id: phonic-weaver-475017-n1
+          version: '>= 363.0.0'
+
+      - name: Deploy immutable images to existing pilot services
+        shell: bash
+        run: |
+          set -euo pipefail
+          backend_digest="$(gcloud artifacts docker images describe "$BACKEND_IMAGE" --project="$PROJECT_ID" --format='value(image_summary.fully_qualified_digest)')"
+          gateway_digest="$(gcloud artifacts docker images describe "$GATEWAY_IMAGE" --project="$PROJECT_ID" --format='value(image_summary.fully_qualified_digest)')"
+          [[ "$backend_digest" == "$REGISTRY_HOST"/*@sha256:* ]]
+          [[ "$gateway_digest" == "$REGISTRY_HOST"/*@sha256:* ]]
+          gcloud run services update agenticai-data-pilot --image="$backend_digest" --region="$REGION" --project="$PROJECT_ID" --quiet
+          gcloud run services update agenticai-columbia-pilot --image="$gateway_digest" --region="$REGION" --project="$PROJECT_ID" --quiet
+          curl --fail --silent --show-error --retry 5 --retry-delay 3 --retry-all-errors \
+            https://agenticai-columbia-pilot-3d4n5heeaq-uc.a.run.app/health
+          {
+            echo '### Columbia pilot deployment'
+            echo "- Backend: \`$backend_digest\`"
+            echo "- Gateway: \`$gateway_digest\`"
+            echo '- Public health check: passed'
+          } >> "$GITHUB_STEP_SUMMARY"
