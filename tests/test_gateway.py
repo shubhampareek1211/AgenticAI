@@ -43,6 +43,7 @@ def test_gateway_serves_login_and_relays_only_allowlisted_authenticated_calls(tm
     )
     with TestClient(app) as client:
         assert "pilot" in client.get("/").text
+        assert client.get("/health").json() == {"status": "ok"}
         assert "pilot" in client.get("/auth/finish").text
         assert client.get("/auth/config").json()["firebaseConfig"]["projectId"] == "pilot"
         assert client.post("/sessions", json={}).status_code == 401

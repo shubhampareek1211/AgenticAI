@@ -116,6 +116,7 @@ def create_app(
         public = path in {
             "/",
             "/auth/finish",
+            "/health",
             "/healthz",
             "/auth/config",
             "/assets/plotly-basic-4.1.1.min.js",
@@ -224,6 +225,7 @@ def create_app(
             raise HTTPException(404, "Frontend asset not found.")
         return FileResponse(asset, headers={"Cache-Control": "public, max-age=31536000, immutable"})
 
+    @application.get("/health")
     @application.get("/healthz")
     def health(request: Request):
         configured = request.app.state.configuration_error is None

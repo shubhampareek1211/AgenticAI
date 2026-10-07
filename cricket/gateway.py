@@ -170,6 +170,7 @@ def create_app(
             request.app.state.settings.public_auth_config(), headers={"Cache-Control": "no-store"}
         )
 
+    @application.get("/health")
     @application.get("/healthz")
     def health():
         return {"status": "ok"}

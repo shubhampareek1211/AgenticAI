@@ -268,7 +268,7 @@ summary output produces a saved failure without advancing its checkpoint. If the
 recent turns or a summary input cannot fit, an actionable response asks for a new
 conversation or a larger configured budget. Exchanges are never partially trimmed.
 
-`GET /healthz` checks process/configuration only, without querying providers or the
+`GET /health` checks process/configuration only, without querying providers or the
 database. Storage errors return a safe 503 and explain configuration/migrations.
 Development sessions are anonymous UUID capabilities. In `APP_ENV=pilot` or
 `production`, the API verifies Firebase ID tokens and exact verified Columbia

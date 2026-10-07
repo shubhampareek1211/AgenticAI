@@ -121,6 +121,7 @@ def test_api_gate_precedes_body_parsing_and_public_config(tmp_path):
         authorizer=authorizer_for({"alice": claims()}),
     )
     with TestClient(app) as client:
+        assert client.get("/health").status_code == 200
         assert client.get("/healthz").status_code == 200
         assert client.get("/auth/finish?oobCode=example").text == "<html>Pilot login</html>"
         assert client.get("/auth/config").json() == {
