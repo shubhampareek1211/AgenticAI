@@ -1,0 +1,35 @@
+# Manual candidate build; do not attach this to the legacy deployment trigger.
+# Create a us-central1 Artifact Registry Docker repository named agenticai-pilot
+# before running. BUILD_ID makes each image tag unique; record final digests.
+steps:
+  - id: app-image
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --pull
+      - --platform=linux/amd64
+      - -f
+      - deploy/app/Dockerfile
+      - -t
+      - us-central1-docker.pkg.dev/$PROJECT_ID/agenticai-pilot/app:$BUILD_ID
+      - .
+  - id: voice-image
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --pull
+      - --platform=linux/amd64
+      - --build-arg
+      - MODEL=small
+      - --build-arg
+      - MODEL_SHA256=1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b
+      - -f
+      - deploy/voice/Dockerfile
+      - -t
+      - us-central1-docker.pkg.dev/$PROJECT_ID/agenticai-pilot/voice:$BUILD_ID
+      - .
+images:
+  - us-central1-docker.pkg.dev/$PROJECT_ID/agenticai-pilot/app:$BUILD_ID
+  - us-central1-docker.pkg.dev/$PROJECT_ID/agenticai-pilot/voice:$BUILD_ID
+options:
+  logging: CLOUD_LOGGING_ONLY

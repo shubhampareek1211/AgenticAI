@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voice evaluation recordings</title>
+<style>
+body{font:17px/1.55 system-ui,sans-serif;color:#182b3b;background:#f4f7fa;margin:0}main{max-width:850px;margin:40px auto;padding:28px;background:white;border-radius:16px}h1{font-size:28px}label{display:block;margin:16px 0 6px}select,input,textarea,button{font:inherit;box-sizing:border-box}select,input,textarea{padding:10px;border:1px solid #aab7c3;border-radius:6px;max-width:100%}textarea,select{width:100%}textarea{min-height:145px}button{padding:10px 16px;margin:8px 8px 8px 0;border:1px solid #617b91;border-radius:7px;background:#edf4fa;color:#123148;cursor:pointer}button:disabled{opacity:.45;cursor:default}#record{background:#153d62;color:white}.note{color:#4f6070}#status{min-height:30px;font-weight:600}audio{width:100%}.consent{display:flex;gap:10px;align-items:start}.consent input{margin-top:7px}small{display:block}a{color:#184f83}
+</style>
+<main>
+<h1>Record speech evaluation samples</h1>
+<p>Start with the first two English questions. These recordings stay in your browser until you download them. This page does not upload audio.</p>
+<p class="note">Downloaded clips will later be sent through our application to Google Cloud Whisper for testing. Use only your voice or a speaker who has agreed. Avoid personal details.</p>
+<label for="speaker">Speaker label (a nickname such as speaker01)</label>
+<input id="speaker" value="speaker01" pattern="[A-Za-z0-9_-]{1,30}" maxlength="30">
+<label for="group">Language group</label>
+<select id="group"><option value="english">English</option><option value="hindi">Hindi</option><option value="mixed">Hindi + English</option></select>
+<label for="prompt">Recording prompt</label><select id="prompt"></select>
+<p id="instruction"></p>
+<label for="reference">Read this aloud. Afterwards, edit it if you said something different.</label>
+<textarea id="reference" lang="en"></textarea>
+<label class="consent"><input id="consent" type="checkbox"><span>I agree to these recordings being used for cloud transcription testing, and have the speaker's permission.</span></label>
+<div><button id="record">Record</button><button id="stop" disabled>Stop</button><button id="cancel" disabled>Cancel</button></div>
+<p id="status" role="status" aria-live="polite">Ready. Microphone access starts only when you press Record.</p>
+<audio id="playback" controls hidden></audio>
+<button id="save" disabled>Download this recording</button>
+<button id="next">Next prompt</button>
+<hr>
+<p id="count"></p>
+<button id="manifest">Download manifest</button>
+<p class="note">Put the audio files and <code>manifest.json</code> in the same folder under the project's <code>.local/voice/recordings/</code> directory. Each download is a separate file. The manifest lists the recordings you chose to download; their contents stay on this device until the evaluation is run.</p>
+<small>The complete set has 20 short questions, five long recordings and five no-speech controls per language group. A few recordings are useful for diagnosis but do not establish release acceptance.</small>
+</main>
+<script src="recorder.js"></script>
+</html>

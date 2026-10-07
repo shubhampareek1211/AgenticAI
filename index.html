@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Gemini Web Tool Calling</title>
+        <script src="/assets/plotly-basic-4.1.1.min.js" defer></script>
         <style>
             * {
                 box-sizing: border-box;
@@ -95,6 +96,30 @@
                 letter-spacing: 0.05em;
                 color: #b45309;
             }
+            .tool summary {
+                cursor: pointer;
+            }
+            .tool pre {
+                max-height: 240px;
+                margin-top: 0.5rem;
+                overflow: auto;
+                white-space: pre-wrap;
+            }
+            .chart {
+                margin-top: 1rem;
+                font-family: system-ui, sans-serif;
+                white-space: normal;
+                color: #222;
+            }
+            .chart-plot {
+                width: 100%;
+                height: 340px;
+            }
+            .chart-caption {
+                margin-top: 0.5rem;
+                line-height: 1.4;
+                overflow-wrap: anywhere;
+            }
             button:disabled {
                 opacity: 0.3;
             }
@@ -109,7 +134,9 @@
                     id="user-input"
                     placeholder="Type a message..."
                     autocomplete="off"
+                    maxlength="8000"
                 />
+                <button id="clear-btn">Clear</button>
                 <button id="send-btn">Send</button>
             </div>
         </div>
@@ -117,7 +144,26 @@
             const messages = document.getElementById("messages");
             const userInput = document.getElementById("user-input");
             const sendBtn = document.getElementById("send-btn");
-            let sessionId = null;
+            const clearBtn = document.getElementById("clear-btn");
+            const sessionKey = "cricket_session_id";
+            // A local session link can reopen a saved chart when the original tab is unavailable.
+            const linkedSession = /^#session=([0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12})$/i
+                .exec(location.hash)?.[1];
+            let sessionId = linkedSession || sessionStorage.getItem(sessionKey);
+            if (linkedSession) {
+                sessionStorage.setItem(sessionKey, linkedSession);
+                history.replaceState(null, "", location.pathname + location.search);
+            }
+
+            function rememberSession(id) {
+                sessionId = id;
+                if (id) sessionStorage.setItem(sessionKey, id);
+                else sessionStorage.removeItem(sessionKey);
+            }
+
+            function setBusy(busy) {
+                sendBtn.disabled = clearBtn.disabled = busy;
+            }
 
             function addMessage(role, text, isLoading = false) {
                 const div = document.createElement("div");
@@ -125,27 +171,147 @@
                     "msg " +
                     (role === "you" ? "user" : "assistant") +
                     (isLoading ? " loading" : "");
-                div.innerHTML =
-                    '<div class="role">' +
-                    role +
-                    '</div><div class="content">' +
-                    text +
-                    "</div>";
+                const label = document.createElement("div");
+                label.className = "role";
+                label.textContent = role;
+                const content = document.createElement("div");
+                content.className = "content";
+                content.textContent = text;
+                div.append(label, content);
                 messages.appendChild(div);
                 messages.scrollTop = messages.scrollHeight;
                 return div;
             }
 
+            async function renderChart(call, host) {
+                let result;
+                try { result = JSON.parse(call.result); } catch { return; }
+                if (call.name !== "create_cricket_chart" || !result.ok || !result.data?.chart_id) return;
+                const chart = document.createElement("div");
+                chart.className = "chart";
+                host.appendChild(chart);
+                try {
+                    const url = "/sessions/" + encodeURIComponent(sessionId) +
+                        "/charts/" + encodeURIComponent(result.data.chart_id);
+                    const saved = await responseData(await fetch(url));
+                    if (!saved.figure || !Array.isArray(saved.figure.data) || !saved.figure.layout ||
+                        typeof Plotly === "undefined") throw new Error("Chart renderer unavailable.");
+                    const plot = document.createElement("div");
+                    plot.className = "chart-plot";
+                    const caption = document.createElement("div");
+                    caption.className = "chart-caption";
+                    const plotted = saved.coverage?.plotted || {};
+                    const sample = plotted.batting_innings !== undefined
+                        ? `${plotted.batting_innings} complete innings from ${plotted.matches} ` +
+                            (plotted.matches === 1 ? "match" : "matches")
+                        : `${plotted.eligible_events ?? 0} eligible wicket events`;
+                    const availableMatches = saved.coverage?.sample_size?.matches;
+                    const available = availableMatches !== undefined &&
+                        availableMatches !== plotted.matches
+                        ? ` Available-match sample: ${availableMatches} matches.` : "";
+                    const dates = plotted.date_start
+                        ? `, ${plotted.date_start} to ${plotted.date_end}` : "";
+                    const sources = (saved.provenance || [])
+                        .filter(item => item.provider === "cricsheet")
+                        .map(item => item.url).join(", ");
+                    const sampleNote = plotted.insufficient_sample ? " Insufficient sample." : "";
+                    caption.textContent = `${sample}${dates}.${available}${sampleNote} ${saved.coverage?.scope || ""}` +
+                        (sources ? ` Sources: ${sources}` : "");
+                    chart.append(plot, caption);
+                    await Plotly.newPlot(plot, saved.figure.data, saved.figure.layout,
+                        {responsive: true, displaylogo: false, showSendToCloud: false});
+                } catch (error) {
+                    chart.textContent = "Chart unavailable: " + error.message;
+                }
+            }
+
+            async function addToolCall(call, before = null) {
+                const div = document.createElement("div");
+                div.className = "tool";
+                const details = document.createElement("details");
+                const summary = document.createElement("summary");
+                summary.className = "label";
+                summary.textContent = "tool call  " + call.name + "(" + JSON.stringify(call.args) + ")";
+                const raw = document.createElement("pre");
+                raw.textContent = call.result;
+                details.append(summary, raw);
+                div.appendChild(details);
+                messages.insertBefore(div, before);
+                await renderChart(call, div);
+            }
+
+            async function responseData(res) {
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(typeof data.detail === "string" ? data.detail : "Request failed. Please retry.");
+                }
+                return data;
+            }
+
+            async function renderTranscript(data) {
+                messages.replaceChildren();
+                const calls = new Map(data.tool_calls.map(call => [call.id, call]));
+                for (const message of data.messages) {
+                    const payload = message.payload;
+                    if (message.role === "user") addMessage("you", payload.content);
+                    else if (message.role === "assistant" && payload.content) {
+                        addMessage("assistant", payload.content);
+                    } else if (message.role === "tool" && calls.has(payload.tool_call_id)) {
+                        await addToolCall(calls.get(payload.tool_call_id));
+                    }
+                }
+                messages.scrollTop = messages.scrollHeight;
+            }
+
+            async function restore() {
+                setBusy(true);
+                try {
+                    while (sessionId) {
+                        const url = "/sessions/" + encodeURIComponent(sessionId);
+                        const res = await fetch(url);
+                        if (res.status === 404) {
+                            rememberSession(null);
+                            messages.replaceChildren();
+                            return;
+                        }
+                        const data = await responseData(res);
+                        await renderTranscript(data);
+                        if (data.request_state === "interrupted") {
+                            // Recovery only closes abandoned work; it never reruns tools.
+                            const recovered = await fetch(url + "/recover", {method: "POST"});
+                            if (recovered.status !== 409) {
+                                await responseData(recovered);
+                                continue;
+                            }
+                        } else if (data.request_state !== "running") {
+                            return;
+                        }
+                        addMessage("assistant", "A request is still running. Restoring its saved progress...", true);
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                } catch (e) {
+                    addMessage("assistant", "Could not restore the conversation: " + e.message);
+                } finally {
+                    setBusy(false);
+                    userInput.focus();
+                }
+            }
+
             async function send() {
                 const text = userInput.value.trim();
-                if (!text) return;
+                if (!text || sendBtn.disabled) return;
 
                 userInput.value = "";
-                sendBtn.disabled = true;
+                setBusy(true);
                 addMessage("you", text);
                 const loading = addMessage("assistant", "Thinking...", true);
 
                 try {
+                    // Save the session before model work so a refresh can find this request.
+                    if (!sessionId) {
+                        const allocated = await responseData(await fetch("/sessions", {method: "POST"}));
+                        rememberSession(allocated.session_id);
+                    }
                     const res = await fetch("/chat", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -154,23 +320,12 @@
                             session_id: sessionId,
                         }),
                     });
-                    const data = await res.json();
-                    sessionId = data.session_id;
+                    const data = await responseData(res);
+                    rememberSession(data.session_id);
 
                     // Show each tool the harness ran, above the assistant's answer
                     for (const call of data.tool_calls || []) {
-                        const div = document.createElement("div");
-                        div.className = "tool";
-                        const label = document.createElement("span");
-                        label.className = "label";
-                        label.textContent = "tool call  ";
-                        div.appendChild(label);
-                        div.appendChild(
-                            document.createTextNode(
-                                call.name + "(" + JSON.stringify(call.args) + ")\n→ " + call.result,
-                            ),
-                        );
-                        messages.insertBefore(div, loading);
+                        await addToolCall(call, loading);
                     }
                     loading.querySelector(".content").textContent =
                         data.response;
@@ -180,15 +335,34 @@
                         "Error: " + e.message;
                     loading.classList.remove("loading");
                 }
-                sendBtn.disabled = false;
+                setBusy(false);
                 userInput.focus();
             }
 
+            async function clearConversation() {
+                if (clearBtn.disabled) return;
+                setBusy(true);
+                try {
+                    if (sessionId) {
+                        const res = await fetch("/clear?session_id=" + encodeURIComponent(sessionId), {method: "POST"});
+                        if (res.status !== 404) await responseData(res);
+                    }
+                    rememberSession(null);
+                    messages.replaceChildren();
+                } catch (e) {
+                    addMessage("assistant", "Could not clear the conversation: " + e.message);
+                } finally {
+                    setBusy(false);
+                    userInput.focus();
+                }
+            }
+
             sendBtn.addEventListener("click", send);
+            clearBtn.addEventListener("click", clearConversation);
             userInput.addEventListener("keydown", function (e) {
                 if (e.key === "Enter") send();
             });
-            userInput.focus();
+            restore();
         </script>
     </body>
 </html>

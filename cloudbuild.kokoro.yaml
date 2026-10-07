@@ -1,0 +1,31 @@
+# Manual worker-only build; does not invoke the existing app's deployment trigger.
+timeout: 1800s
+steps:
+  - id: kokoro-image
+    name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --pull
+      - --platform=linux/amd64
+      - -f
+      - deploy/kokoro/Dockerfile
+      - -t
+      - us-central1-docker.pkg.dev/$PROJECT_ID/agenticai-pilot/kokoro:$BUILD_ID
+      - .
+  - id: offline-cpu-smoke
+    name: gcr.io/cloud-builders/docker
+    args:
+      - run
+      - --rm
+      - --network=none
+      - --cpus=2
+      - --memory=2g
+      - --entrypoint=python
+      - us-central1-docker.pkg.dev/$PROJECT_ID/agenticai-pilot/kokoro:$BUILD_ID
+      - /app/smoke.py
+      - --launch-worker
+      - --repeats=1
+images:
+  - us-central1-docker.pkg.dev/$PROJECT_ID/agenticai-pilot/kokoro:$BUILD_ID
+options:
+  logging: CLOUD_LOGGING_ONLY

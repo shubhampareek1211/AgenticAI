@@ -1,0 +1,812 @@
+[
+  {
+    "id": "english-01",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Explain what a wicket means in cricket in one short sentence.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-02",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Give me a brief profile of Virat Kohli in two sentences.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-03",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Show Rohit Sharma's one day international runs by year.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-04",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Compare Virat Kohli and Joe Root in the available one day matches.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-05",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "How many wickets did Jasprit Bumrah take in the selected matches?",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-06",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Show Babar Azam's strike rate and the number of innings in the sample.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-07",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Did India win by six wickets or by sixty runs?",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-08",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "The batter scored eighty two runs from fifty three balls.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-09",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Explain the difference between a batting average and a strike rate.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-10",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Compare the years twenty nineteen and twenty twenty three.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-11",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Show the partnership between Rohit Sharma and Shubman Gill.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-12",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Compare Ravindra Jadeja and Ravichandran Ashwin in these matches.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-13",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "How does the scoring rate change after a teammate loses a wicket?",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-14",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Only include men's twenty twenty internationals in this comparison.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-15",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Please show the sample size and the covered date range.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-16",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "His economy rate was six point two five runs per over.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-17",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Compare the first ten overs with the final ten overs.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-18",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Show Kane Williamson and A B de Villiers on the same chart.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-19",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Do these figures describe available matches or complete career totals?",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-20",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Keep the same player but change the format to one day internationals.",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "english-long-01",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "Explain what a wicket means in cricket in one short sentence. Give me a brief profile of Virat Kohli in two sentences. Show Rohit Sharma's one day international runs by year. Compare Virat Kohli and Joe Root in the available one day matches. Explain what a wicket means in cricket in one short sentence. Give me a brief profile of Virat Kohli in two sentences. Show Rohit Sharma's one day international runs by year. Compare Virat Kohli and Joe Root in the available one day matches.",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "english-long-02",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "How many wickets did Jasprit Bumrah take in the selected matches? Show Babar Azam's strike rate and the number of innings in the sample. Did India win by six wickets or by sixty runs? The batter scored eighty two runs from fifty three balls. How many wickets did Jasprit Bumrah take in the selected matches? Show Babar Azam's strike rate and the number of innings in the sample. Did India win by six wickets or by sixty runs? The batter scored eighty two runs from fifty three balls.",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "english-long-03",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "Explain the difference between a batting average and a strike rate. Compare the years twenty nineteen and twenty twenty three. Show the partnership between Rohit Sharma and Shubman Gill. Compare Ravindra Jadeja and Ravichandran Ashwin in these matches. Explain the difference between a batting average and a strike rate. Compare the years twenty nineteen and twenty twenty three. Show the partnership between Rohit Sharma and Shubman Gill. Compare Ravindra Jadeja and Ravichandran Ashwin in these matches.",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "english-long-04",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "How does the scoring rate change after a teammate loses a wicket? Only include men's twenty twenty internationals in this comparison. Please show the sample size and the covered date range. His economy rate was six point two five runs per over. How does the scoring rate change after a teammate loses a wicket? Only include men's twenty twenty internationals in this comparison. Please show the sample size and the covered date range. His economy rate was six point two five runs per over.",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "english-long-05",
+    "group": "english",
+    "language": "en",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "Compare the first ten overs with the final ten overs. Show Kane Williamson and A B de Villiers on the same chart. Do these figures describe available matches or complete career totals? Keep the same player but change the format to one day internationals. Compare the first ten overs with the final ten overs. Show Kane Williamson and A B de Villiers on the same chart. Do these figures describe available matches or complete career totals? Keep the same player but change the format to one day internationals.",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "english-control-01",
+    "group": "english",
+    "language": "en",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Quiet room, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  },
+  {
+    "id": "english-control-02",
+    "group": "english",
+    "language": "en",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Room fan or air conditioner, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  },
+  {
+    "id": "english-control-03",
+    "group": "english",
+    "language": "en",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Gentle keyboard typing, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  },
+  {
+    "id": "english-control-04",
+    "group": "english",
+    "language": "en",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Street or traffic sound, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  },
+  {
+    "id": "english-control-05",
+    "group": "english",
+    "language": "en",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Soft microphone handling noise, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  },
+  {
+    "id": "hindi-01",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "क्रिकेट में विकेट का मतलब एक छोटे वाक्य में समझाइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-02",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "विराट कोहली के बारे में दो वाक्यों में बताइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-03",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "रोहित शर्मा के एकदिवसीय अंतरराष्ट्रीय रन साल के हिसाब से दिखाइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-04",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "उपलब्ध एकदिवसीय मैचों में विराट कोहली और जो रूट की तुलना कीजिए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-05",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "चुने हुए मैचों में जसप्रीत बुमराह ने कितने विकेट लिए?",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-06",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "बाबर आज़म का स्ट्राइक रेट और नमूने में पारियों की संख्या दिखाइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-07",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "भारत छह विकेट से जीता था या साठ रन से?",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-08",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "बल्लेबाज़ ने तिरपन गेंदों पर बयासी रन बनाए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-09",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "बल्लेबाज़ी औसत और स्ट्राइक रेट में अंतर समझाइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-10",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "साल दो हज़ार उन्नीस और दो हज़ार तेईस की तुलना कीजिए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-11",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "रोहित शर्मा और शुभमन गिल के बीच साझेदारी दिखाइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-12",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "इन मैचों में रवींद्र जडेजा और रविचंद्रन अश्विन की तुलना कीजिए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-13",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "साथी खिलाड़ी के आउट होने के बाद रन बनाने की गति कैसे बदलती है?",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-14",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "इस तुलना में केवल पुरुषों के टी ट्वेंटी अंतरराष्ट्रीय मैच शामिल कीजिए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-15",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "कृपया नमूने का आकार और शामिल तारीखों की सीमा दिखाइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-16",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "उसका इकॉनमी रेट छह दशमलव दो पाँच रन प्रति ओवर था।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-17",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "पहले दस ओवरों की आखिरी दस ओवरों से तुलना कीजिए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-18",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "केन विलियमसन और ए बी डिविलियर्स को एक ही चार्ट पर दिखाइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-19",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "क्या ये आँकड़े उपलब्ध मैचों के हैं या पूरे करियर के?",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-20",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "खिलाड़ी वही रखिए लेकिन प्रारूप एकदिवसीय अंतरराष्ट्रीय कर दीजिए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "hindi-long-01",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "क्रिकेट में विकेट का मतलब एक छोटे वाक्य में समझाइए। विराट कोहली के बारे में दो वाक्यों में बताइए। रोहित शर्मा के एकदिवसीय अंतरराष्ट्रीय रन साल के हिसाब से दिखाइए। उपलब्ध एकदिवसीय मैचों में विराट कोहली और जो रूट की तुलना कीजिए। क्रिकेट में विकेट का मतलब एक छोटे वाक्य में समझाइए। विराट कोहली के बारे में दो वाक्यों में बताइए। रोहित शर्मा के एकदिवसीय अंतरराष्ट्रीय रन साल के हिसाब से दिखाइए। उपलब्ध एकदिवसीय मैचों में विराट कोहली और जो रूट की तुलना कीजिए।",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "hindi-long-02",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "चुने हुए मैचों में जसप्रीत बुमराह ने कितने विकेट लिए? बाबर आज़म का स्ट्राइक रेट और नमूने में पारियों की संख्या दिखाइए। भारत छह विकेट से जीता था या साठ रन से? बल्लेबाज़ ने तिरपन गेंदों पर बयासी रन बनाए। चुने हुए मैचों में जसप्रीत बुमराह ने कितने विकेट लिए? बाबर आज़म का स्ट्राइक रेट और नमूने में पारियों की संख्या दिखाइए। भारत छह विकेट से जीता था या साठ रन से? बल्लेबाज़ ने तिरपन गेंदों पर बयासी रन बनाए।",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "hindi-long-03",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "बल्लेबाज़ी औसत और स्ट्राइक रेट में अंतर समझाइए। साल दो हज़ार उन्नीस और दो हज़ार तेईस की तुलना कीजिए। रोहित शर्मा और शुभमन गिल के बीच साझेदारी दिखाइए। इन मैचों में रवींद्र जडेजा और रविचंद्रन अश्विन की तुलना कीजिए। बल्लेबाज़ी औसत और स्ट्राइक रेट में अंतर समझाइए। साल दो हज़ार उन्नीस और दो हज़ार तेईस की तुलना कीजिए। रोहित शर्मा और शुभमन गिल के बीच साझेदारी दिखाइए। इन मैचों में रवींद्र जडेजा और रविचंद्रन अश्विन की तुलना कीजिए।",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "hindi-long-04",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "साथी खिलाड़ी के आउट होने के बाद रन बनाने की गति कैसे बदलती है? इस तुलना में केवल पुरुषों के टी ट्वेंटी अंतरराष्ट्रीय मैच शामिल कीजिए। कृपया नमूने का आकार और शामिल तारीखों की सीमा दिखाइए। उसका इकॉनमी रेट छह दशमलव दो पाँच रन प्रति ओवर था। साथी खिलाड़ी के आउट होने के बाद रन बनाने की गति कैसे बदलती है? इस तुलना में केवल पुरुषों के टी ट्वेंटी अंतरराष्ट्रीय मैच शामिल कीजिए। कृपया नमूने का आकार और शामिल तारीखों की सीमा दिखाइए। उसका इकॉनमी रेट छह दशमलव दो पाँच रन प्रति ओवर था।",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "hindi-long-05",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "पहले दस ओवरों की आखिरी दस ओवरों से तुलना कीजिए। केन विलियमसन और ए बी डिविलियर्स को एक ही चार्ट पर दिखाइए। क्या ये आँकड़े उपलब्ध मैचों के हैं या पूरे करियर के? खिलाड़ी वही रखिए लेकिन प्रारूप एकदिवसीय अंतरराष्ट्रीय कर दीजिए। पहले दस ओवरों की आखिरी दस ओवरों से तुलना कीजिए। केन विलियमसन और ए बी डिविलियर्स को एक ही चार्ट पर दिखाइए। क्या ये आँकड़े उपलब्ध मैचों के हैं या पूरे करियर के? खिलाड़ी वही रखिए लेकिन प्रारूप एकदिवसीय अंतरराष्ट्रीय कर दीजिए।",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "hindi-control-01",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Quiet room, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  },
+  {
+    "id": "hindi-control-02",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Room fan or air conditioner, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  },
+  {
+    "id": "hindi-control-03",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Gentle keyboard typing, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  },
+  {
+    "id": "hindi-control-04",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Street or traffic sound, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  },
+  {
+    "id": "hindi-control-05",
+    "group": "hindi",
+    "language": "hi",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Soft microphone handling noise, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  },
+  {
+    "id": "mixed-01",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Cricket में wicket का मतलब एक short sentence में समझाइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-02",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Virat Kohli की brief profile दो sentences में बताइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-03",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Rohit Sharma के ODI runs year के हिसाब से दिखाइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-04",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Available ODI matches में Virat Kohli और Joe Root को compare कीजिए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-05",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Selected matches में Jasprit Bumrah ने कितने wickets लिए?",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-06",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Babar Azam का strike rate और sample में innings की count दिखाइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-07",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "India six wickets से जीता था या sixty runs से?",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-08",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Batter ने fifty three balls पर eighty two runs बनाए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-09",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Batting average और strike rate के बीच difference समझाइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-10",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Years twenty nineteen और twenty twenty three को compare कीजिए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-11",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Rohit Sharma और Shubman Gill की partnership दिखाइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-12",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "इन matches में Ravindra Jadeja और Ravichandran Ashwin को compare कीजिए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-13",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Teammate के wicket के बाद scoring rate कैसे change होता है?",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-14",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "इस comparison में सिर्फ men's T20 internationals include कीजिए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-15",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Please sample size और covered date range दिखाइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-16",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "उसका economy rate six point two five runs per over था।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-17",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "First ten overs को final ten overs से compare कीजिए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-18",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Kane Williamson और A B de Villiers को same chart पर दिखाइए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-19",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "ये figures available matches के हैं या complete career totals के?",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-20",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "short",
+    "prompt": "Player same रखिए लेकिन format ODI कर दीजिए।",
+    "instruction": "Aim for 5–15 seconds at your normal pace. If you change the words, update the reference before downloading."
+  },
+  {
+    "id": "mixed-long-01",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "Cricket में wicket का मतलब एक short sentence में समझाइए। Virat Kohli की brief profile दो sentences में बताइए। Rohit Sharma के ODI runs year के हिसाब से दिखाइए। Available ODI matches में Virat Kohli और Joe Root को compare कीजिए। Cricket में wicket का मतलब एक short sentence में समझाइए। Virat Kohli की brief profile दो sentences में बताइए। Rohit Sharma के ODI runs year के हिसाब से दिखाइए। Available ODI matches में Virat Kohli और Joe Root को compare कीजिए।",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "mixed-long-02",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "Selected matches में Jasprit Bumrah ने कितने wickets लिए? Babar Azam का strike rate और sample में innings की count दिखाइए। India six wickets से जीता था या sixty runs से? Batter ने fifty three balls पर eighty two runs बनाए। Selected matches में Jasprit Bumrah ने कितने wickets लिए? Babar Azam का strike rate और sample में innings की count दिखाइए। India six wickets से जीता था या sixty runs से? Batter ने fifty three balls पर eighty two runs बनाए।",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "mixed-long-03",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "Batting average और strike rate के बीच difference समझाइए। Years twenty nineteen और twenty twenty three को compare कीजिए। Rohit Sharma और Shubman Gill की partnership दिखाइए। इन matches में Ravindra Jadeja और Ravichandran Ashwin को compare कीजिए। Batting average और strike rate के बीच difference समझाइए। Years twenty nineteen और twenty twenty three को compare कीजिए। Rohit Sharma और Shubman Gill की partnership दिखाइए। इन matches में Ravindra Jadeja और Ravichandran Ashwin को compare कीजिए।",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "mixed-long-04",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "Teammate के wicket के बाद scoring rate कैसे change होता है? इस comparison में सिर्फ men's T20 internationals include कीजिए। Please sample size और covered date range दिखाइए। उसका economy rate six point two five runs per over था। Teammate के wicket के बाद scoring rate कैसे change होता है? इस comparison में सिर्फ men's T20 internationals include कीजिए। Please sample size और covered date range दिखाइए। उसका economy rate six point two five runs per over था।",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "mixed-long-05",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "speech",
+    "length": "long",
+    "prompt": "First ten overs को final ten overs से compare कीजिए। Kane Williamson और A B de Villiers को same chart पर दिखाइए। ये figures available matches के हैं या complete career totals के? Player same रखिए लेकिन format ODI कर दीजिए। First ten overs को final ten overs से compare कीजिए। Kane Williamson और A B de Villiers को same chart पर दिखाइए। ये figures available matches के हैं या complete career totals के? Player same रखिए लेकिन format ODI कर दीजिए।",
+    "instruction": "Aim for about 55–59 seconds. Read naturally, repeating the passage if needed. Edit the reference to match what you actually said. Capture stops at 59 seconds; exact duration is measured by the app."
+  },
+  {
+    "id": "mixed-control-01",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Quiet room, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  },
+  {
+    "id": "mixed-control-02",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Room fan or air conditioner, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  },
+  {
+    "id": "mixed-control-03",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Gentle keyboard typing, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  },
+  {
+    "id": "mixed-control-04",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Street or traffic sound, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  },
+  {
+    "id": "mixed-control-05",
+    "group": "mixed",
+    "language": "auto",
+    "kind": "silence",
+    "length": "control",
+    "prompt": "",
+    "instruction": "Soft microphone handling noise, no speech. Record 5–15 seconds. Avoid background conversations or media speech."
+  }
+]

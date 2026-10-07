@@ -1,0 +1,44 @@
+[
+  {
+    "match_id": "1022353",
+    "archive_url": "https://cricsheet.org/downloads/odis_male_json.zip",
+    "archive_checksum": "b6a1d6b683f19110ada34191183db55c03e09acb386d0f4b9bf0be2fb75bbac0",
+    "file_checksum": "1317a04626223ec422d29bc0f7a473f9109285abe69a7551da7a079af3ca46c6",
+    "meta": {
+      "data_version": "1.2.0",
+      "created": "2017-06-07",
+      "revision": 1
+    },
+    "dates": [
+      "2017-06-04"
+    ]
+  },
+  {
+    "match_id": "1041615",
+    "archive_url": "https://cricsheet.org/downloads/t20s_male_json.zip",
+    "archive_checksum": "e098ad15622ac9e31da60e5e2ecd793c3d33352eb25b2a286b3cf08ffe98fa9e",
+    "file_checksum": "e30a4b335e455bb67f0cc565f83d796eb32f0cacce240e333fce5f3898978b0e",
+    "meta": {
+      "data_version": "1.2.0",
+      "created": "2016-08-31",
+      "revision": 1
+    },
+    "dates": [
+      "2016-08-27"
+    ]
+  },
+  {
+    "match_id": "1229824",
+    "archive_url": "https://cricsheet.org/downloads/t20s_male_json.zip",
+    "archive_checksum": "e098ad15622ac9e31da60e5e2ecd793c3d33352eb25b2a286b3cf08ffe98fa9e",
+    "file_checksum": "eb1489e21da77ceaac967f95159919d126ad1bb05d891829cde5798f835af0fd",
+    "meta": {
+      "data_version": "1.2.0",
+      "created": "2020-08-22",
+      "revision": 1
+    },
+    "dates": [
+      "2020-08-21"
+    ]
+  }
+]
