@@ -7,6 +7,10 @@ A chat app for cricket questions. A Gemini model calls tools over ESPN and Crics
 - **Voice:** Whisper (whisper.cpp) for dictation, Kokoro for read-aloud
 - **Data:** men's ODI ball-by-ball files from [Cricsheet](https://cricsheet.org), player profiles from ESPN
 
+## Hosted demo
+
+https://agenticai-git-3d4n5heeaq-uc.a.run.app, built and deployed from `main` by Cloud Build and backed by Cloud SQL. Sign in with a verified `@columbia.edu` email link. Coverage is men's ODI matches only.
+
 ## How a question is answered
 
 The model never computes statistics itself. It chooses tools, the tools return structured results, and the UI shows each call (arguments and raw result) beside the answer.
