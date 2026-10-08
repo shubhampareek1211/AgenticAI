@@ -3,23 +3,35 @@
 A chat app for cricket questions. A Gemini model calls tools over ESPN and Cricsheet data, and every tool call (arguments and raw result) is shown in the UI next to the answer. It can also draw charts, take voice input, and read answers aloud.
 
 - **Backend:** FastAPI, LiteLLM (Gemini on Vertex AI), SQLAlchemy and PostgreSQL
-- **Frontend:** React, Vite and ECharts
+- **Frontend:** React, Vite and Apache ECharts
+- **Voice:** Whisper (whisper.cpp) for dictation, Kokoro for read-aloud
 - **Data:** men's ODI and T20I ball-by-ball files from [Cricsheet](https://cricsheet.org), player profiles from ESPN
 
-## Tools the model can call
+## How a question is answered
 
-| Tool | Source | Purpose |
-| --- | --- | --- |
-| `get_career_stats` | Cricsheet files, fetched live, no database | ODI/T20I career batting and bowling totals |
-| `get_player_data` | PostgreSQL + ESPN profile | Player statistics with filters; feeds charts |
-| `get_match_data` | PostgreSQL | One match by ID or filters |
-| `get_batter_bowler_data` | PostgreSQL | Batter vs bowler phase matchups |
-| `get_squad_comparison` | PostgreSQL | Squad batting comparison |
-| `analyze_wicket_response` | PostgreSQL | Run rate before and after a teammate's dismissal |
-| `create_cricket_chart` | PostgreSQL | Bar, line, scatter, donut, heatmap, bubble, stacked area charts |
-| `get_weather` | Open-Meteo | Current weather for a city |
+The model never computes statistics itself. It chooses tools, the tools return structured results, and the UI shows each call (arguments and raw result) beside the answer.
 
-Statistics cover the imported Cricsheet matches only. They are not official career records, and Tests are excluded.
+| Step | Tool group | What it does | Source |
+| --- | --- | --- | --- |
+| 1. Find the data | **Cricket tools** | Career totals, player and match lookups, batter vs bowler matchups, squad comparisons, wicket-response analysis | PostgreSQL (imported [Cricsheet](https://cricsheet.org) ball-by-ball files), ESPN player profiles, Cricsheet files fetched live for career totals |
+| 2. Draw it | **Chart tool** (`create_cricket_chart`) | Builds a chart from a dataset a cricket tool saved in the same conversation. Values are calculated in Python/SQL, then stored as a renderer-independent chart spec | PostgreSQL; rendered in the browser with [Apache ECharts](https://echarts.apache.org) (open source) |
+
+Cricket tools: `get_career_stats`, `get_player_data`, `get_match_data`, `get_batter_bowler_data`, `get_squad_comparison`, `analyze_wicket_response`.
+
+Chart types: bar, line, scatter, donut, heatmap, bubble, and stacked area/bar, with table and CSV views.
+
+Statistics cover the imported Cricsheet matches only (men's ODI and T20I). They are not official career records, and Tests are excluded.
+
+## Voice models
+
+Voice is optional. Both models run as separate workers, and the browser UI shows each call as a tool card.
+
+| Feature | Model | Hugging Face | Cloud Run worker |
+| --- | --- | --- | --- |
+| Dictation (speech to text) | OpenAI Whisper `small.en` / `small`, served by whisper.cpp | [ggerganov/whisper.cpp](https://huggingface.co/ggerganov/whisper.cpp) | `agenticai-voice-pilot` (https://agenticai-voice-pilot-3d4n5heeaq-uc.a.run.app), IAM-protected |
+| Read aloud (text to speech) | Kokoro 82M, English only | [hexgrad/Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) | `agenticai-kokoro-pilot` (https://agenticai-kokoro-pilot-3d4n5heeaq-uc.a.run.app), IAM-protected |
+
+The Cloud Run workers accept only Google ID tokens from the app's service account, so they are not callable from a browser or `curl` without credentials. Hindi dictation needs the multilingual `small` model; Hindi read-aloud falls back to the browser voice.
 
 ## Requirements
 
@@ -73,10 +85,10 @@ All settings are environment variables; see [.env.example](.env.example) for the
 
 `APP_ENV=local` trusts the local machine and needs no sign-in. Setting `APP_ENV=pilot` or `production` turns on Firebase email authentication, which requires the `FIREBASE_*` variables.
 
-## Optional voice
+## Run the voice workers locally
 
-- **Dictation:** `bash scripts/voice.sh setup small.en` then `bash scripts/voice.sh serve small.en` runs a local whisper.cpp worker on port 8081. Set `VOICE_ENABLED=true`.
-- **Read aloud:** the browser's speech synthesis works with no setup. For generated speech, build and run `deploy/kokoro` and set `TTS_ENABLED=true`.
+- **Dictation:** `bash scripts/voice.sh setup small.en` then `bash scripts/voice.sh serve small.en` starts whisper.cpp on port 8081. Set `VOICE_ENABLED=true`.
+- **Read aloud:** the browser's speech synthesis works with no setup. For Kokoro, build and run `deploy/kokoro` and set `TTS_ENABLED=true`.
 
 ## Docker
 
