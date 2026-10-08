@@ -8,7 +8,7 @@ backend is the only app component with a database connection. The existing
 `agenticai-git` service, IAP policy, and trigger on `gemini-test-project-1`
 remain separate. The private Whisper and Kokoro worker images are unchanged.
 
-## Current deployment, checked 2026-10-07
+## First successful GitHub deployment snapshot, 2026-10-07
 
 - Project `phonic-weaver-475017-n1`, Cloud Run region `us-central1`.
 - Public gateway: `agenticai-columbia-pilot`, revision
@@ -30,6 +30,8 @@ remain separate. The private Whisper and Kokoro worker images are unchanged.
   include the public gateway host.
 - The existing Cloud Build trigger is in `europe-west1`; it builds and deploys
   `agenticai-git` from `gemini-test-project-1`. It is not a pilot trigger.
+- `pilot-release` is the GitHub repository default branch. The pilot workflow
+  deploys code pushes to that branch and skips documentation-only pushes.
 - GitHub Actions [run 37704824785](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37704824785)
   completed in 2m49s; all steps passed. It built both images from the
   `pilot-release` branch and deployed those immutable digests to the two pilot

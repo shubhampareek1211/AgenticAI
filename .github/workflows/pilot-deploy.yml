@@ -3,6 +3,8 @@ name: Deploy Columbia pilot
 on:
   push:
     branches: [pilot-release]
+    paths-ignore:
+      - '**/*.md'
 
 # The Google provider also checks the immutable repository IDs, branch, push
 # event, and this exact workflow path before issuing a short-lived credential.
