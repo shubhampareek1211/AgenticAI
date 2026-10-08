@@ -83,7 +83,7 @@ TOOLS = [
         "function": {
             "name": "get_career_stats",
             "description": (
-                "Get a player's ODI and T20I career batting and bowling totals (runs, "
+                "Get a player's ODI career batting and bowling totals (runs, "
                 "average, strike rate, centuries, wickets) computed live from public "
                 "Cricsheet match files. Use this for career or past-run questions. "
                 "Excludes Tests; ask the user to pick if the name is ambiguous."
@@ -92,7 +92,7 @@ TOOLS = [
                 "type": "object",
                 "properties": {
                     "player_name": {"type": "string", "minLength": 2, "maxLength": 100},
-                    "format": {"type": "string", "enum": ["odi", "t20i"]},
+                    "format": {"type": "string", "enum": ["odi"]},
                 },
                 "required": ["player_name"],
                 "additionalProperties": False,
@@ -104,7 +104,7 @@ TOOLS = [
         "function": {
             "name": "get_player_data",
             "description": (
-                "Find a Cricsheet player, get their ESPN profile and ODI/T20I statistics "
+                "Find a Cricsheet player, get their ESPN profile and ODI statistics "
                 "from imported matches, and save a dataset for charts. Resolve ambiguous "
                 "names by asking for one returned player_id."
             ),
@@ -113,7 +113,7 @@ TOOLS = [
                 "properties": {
                     "player_name": {"type": "string", "minLength": 1, "maxLength": 255},
                     "player_id": {"type": "string", "minLength": 1, "maxLength": 36},
-                    "format": {"type": "string", "enum": ["odi", "t20i"]},
+                    "format": {"type": "string", "enum": ["odi"]},
                     "start_date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
                     "end_date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
                 },
@@ -130,7 +130,7 @@ TOOLS = [
         "function": {
             "name": "get_match_data",
             "description": (
-                "Find one imported ODI/T20I match by Cricsheet match_id or team filters, "
+                "Find one imported ODI match by Cricsheet match_id or team filters, "
                 "and save its complete delivery-derived data for Manhattan, worm, "
                 "run-component area, and partnership charts. "
                 "Ambiguous filters return candidate match_ids; ask the user to choose or narrow them. "
@@ -142,7 +142,7 @@ TOOLS = [
                     "match_id": {"type": "string", "minLength": 1, "maxLength": 64},
                     "team": {"type": "string", "minLength": 1, "maxLength": 255},
                     "opponent": {"type": "string", "minLength": 1, "maxLength": 255},
-                    "format": {"type": "string", "enum": ["odi", "t20i"]},
+                    "format": {"type": "string", "enum": ["odi"]},
                     "date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
                     "year": {"type": "integer", "minimum": 1900, "maximum": 2100},
                     "event": {"type": "string", "minLength": 1, "maxLength": 255},
@@ -157,7 +157,7 @@ TOOLS = [
         "function": {
             "name": "get_batter_bowler_data",
             "description": (
-                "Save one batter's imported ODI or T20I delivery matchups against bowlers by "
+                "Save one batter's imported ODI delivery matchups against bowlers by "
                 "powerplay, middle, and death phase for a heatmap. Use a resolved player_id "
                 "or an unambiguous player_name. This is not complete official career data."
             ),
@@ -166,7 +166,7 @@ TOOLS = [
                 "properties": {
                     "player_id": {"type": "string", "minLength": 1, "maxLength": 36},
                     "player_name": {"type": "string", "minLength": 1, "maxLength": 255},
-                    "format": {"type": "string", "enum": ["odi", "t20i"]},
+                    "format": {"type": "string", "enum": ["odi"]},
                 },
                 "required": ["format"],
                 "oneOf": [{"required": ["player_id"]}, {"required": ["player_name"]}],
@@ -180,14 +180,14 @@ TOOLS = [
             "name": "get_squad_comparison",
             "description": (
                 "Save imported-match batting averages, runs per 100 legal balls, and balls "
-                "faced for up to 20 qualifying players on one exact team in ODI or T20I. "
+                "faced for up to 20 qualifying players on one exact team in ODI. "
                 "Use this dataset for a squad bubble chart."
             ),
             "parameters": {
                 "type": "object",
                 "properties": {
                     "team": {"type": "string", "minLength": 1, "maxLength": 255},
-                    "format": {"type": "string", "enum": ["odi", "t20i"]},
+                    "format": {"type": "string", "enum": ["odi"]},
                 },
                 "required": ["team", "format"],
                 "additionalProperties": False,
@@ -283,7 +283,7 @@ TOOLS = [
             "name": "analyze_wicket_response",
             "description": (
                 "Compare a resolved batter's scoring in 12 legal team deliveries before and "
-                "after a teammate dismissal in imported ODI/T20I matches. This is a "
+                "after a teammate dismissal in imported ODI matches. This is a "
                 "descriptive custom metric, not an official statistic or causal result. "
                 "Use a player_id returned by get_player_data; below 10 eligible events, "
                 "report insufficient sample without directional interpretation."
@@ -292,7 +292,7 @@ TOOLS = [
                 "type": "object",
                 "properties": {
                     "player_id": {"type": "string", "minLength": 1, "maxLength": 36},
-                    "format": {"type": "string", "enum": ["odi", "t20i"]},
+                    "format": {"type": "string", "enum": ["odi"]},
                     "start_date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
                     "end_date": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
                 },

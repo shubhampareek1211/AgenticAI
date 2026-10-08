@@ -40,7 +40,7 @@ function PlayerCard({ result, onFollowup, disabled }: { result: ToolResult; onFo
   const data = result.data || {}
   const identity = (data.identity || {}) as Record<string, unknown>
   const filters = (data.filters || {}) as Record<string, unknown>
-  const [format, setFormat] = useState(String(filters.format || 'all'))
+  const [format, setFormat] = useState('odi')
   const [start, setStart] = useState(String(filters.start_date || ''))
   const [end, setEnd] = useState(String(filters.end_date || ''))
   const name = text(identity.espn_display_name) || text(identity.name) || 'Player'
@@ -49,7 +49,7 @@ function PlayerCard({ result, onFollowup, disabled }: { result: ToolResult; onFo
   const coverageByFormat = ((result.coverage || {}).formats || {}) as Record<string, Record<string, unknown>>
   const apply = () => {
     if (!playerId || (start && end && start > end)) return
-    const formatText = format === 'all' ? 'ODI and T20I' : format.toUpperCase()
+    const formatText = 'ODI'
     onFollowup(`Get updated player data for ${name} (player_id ${playerId}) using ${formatText} matches${start ? ` from ${start}` : ''}${end ? ` through ${end}` : ''}. Summarize the selected coverage and statistics.`)
   }
   return <section className="result-card player-card" aria-label={`${name} player data`}>
@@ -63,7 +63,7 @@ function PlayerCard({ result, onFollowup, disabled }: { result: ToolResult; onFo
     })}</div>
     <Coverage result={result} />
     <div className="filter-panel"><strong>Refine the analysis</strong><div className="filter-grid">
-      <label>Format<select value={format} onChange={event => setFormat(event.target.value)}><option value="all">ODI + T20I</option><option value="odi">ODI</option><option value="t20i">T20I</option></select></label>
+      <label>Format<select value={format} onChange={event => setFormat(event.target.value)}><option value="odi">ODI</option></select></label>
       <label>From<input type="date" value={start} onChange={event => setStart(event.target.value)} /></label>
       <label>Through<input type="date" value={end} onChange={event => setEnd(event.target.value)} /></label>
       <button type="button" className="small-primary" disabled={disabled || !playerId || Boolean(start && end && start > end)} onClick={apply}>Apply filters</button>
@@ -284,7 +284,7 @@ export function App({ authEmail, onSignOut }: { authEmail?: string; onSignOut?: 
     <header className="app-header"><div className="brand"><span className="brand-mark" aria-hidden="true">✦</span><div><strong>Cricket Analyst</strong><span>Evidence from available match data</span></div></div><nav aria-label="Conversation actions">{authEmail && <span className="account-email">{authEmail}</span>}<button type="button" className="header-action" onClick={copyLink} disabled={!sessionId}>{linkCopied ? 'Copied' : 'Copy link'}</button><button type="button" className="header-action" onClick={newConversation} disabled={conversationBusy}>New conversation</button><button type="button" className="header-action danger" onClick={clearConversation} disabled={!sessionId || conversationBusy}>Clear</button>{onSignOut && <button type="button" className="header-action" onClick={() => { playback.stop(); voice.cancel(); onSignOut() }}>Sign out</button>}</nav></header>
     <main className="conversation" ref={scrollArea} onScroll={event => { const target = event.currentTarget; nearBottom.current = target.scrollHeight - target.scrollTop - target.clientHeight < 100 }}>
       <div className="conversation-inner">
-        {displayMessages.length === 0 && !pending && !restoring && <div className="welcome"><div className="welcome-symbol">✦</div><span className="eyebrow">ASK THE CRICKET DATA</span><h1>Find the story in the score.</h1><p>Explore a player’s batting record, compare trends, and inspect how the answer was calculated. Results reflect the imported Cricsheet sample.</p><div className="examples">{examples.map(prompt => <button type="button" key={prompt} onClick={() => void submit(prompt)} disabled={busy}>{prompt}<span aria-hidden="true">↗</span></button>)}</div></div>}
+        {displayMessages.length === 0 && !pending && !restoring && <div className="welcome"><div className="welcome-symbol">✦</div><span className="eyebrow">ASK THE CRICKET DATA</span><h1>Find the story in the score.</h1><p>Explore a player’s batting record, compare trends, and inspect how the answer was calculated. Covers men’s ODI matches only (T20Is and Tests are not included).</p><div className="examples">{examples.map(prompt => <button type="button" key={prompt} onClick={() => void submit(prompt)} disabled={busy}>{prompt}<span aria-hidden="true">↗</span></button>)}</div></div>}
         {restoring && <div className="status-line" role="status">Restoring saved conversation…</div>}
         {activitiesAfter('top').map(activity => <ActivityCard key={activity.id} activity={activity} />)}
         {displayMessages.map(item => <Fragment key={item.id}>{renderMessage(item)}{activitiesAfter(item.id).map(activity => <ActivityCard key={activity.id} activity={activity} />)}</Fragment>)}

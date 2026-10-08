@@ -117,8 +117,8 @@ def get_player_data(
     """Resolve one player and persist filtered innings for later chart requests."""
     if (player_name is None) == (player_id is None):
         return error_result("invalid_arguments", "Supply either player_name or player_id.")
-    if format not in (None, "odi", "t20i"):
-        return error_result("invalid_arguments", "Format must be odi or t20i.")
+    if format not in (None, "odi"):
+        return error_result("invalid_arguments", "Only ODI matches are supported.")
     try:
         start, end = parse_date(start_date), parse_date(end_date)
     except (TypeError, ValueError):
@@ -159,7 +159,7 @@ def get_player_data(
         "profile_retrieved_at": profile_source.get("retrieved_at"),
     }
 
-    formats = [format] if format else ["odi", "t20i"]
+    formats = ["odi"]
     records = {kind: player_records(session, player.id, kind, start, end) for kind in formats}
     stats = {
         kind: {

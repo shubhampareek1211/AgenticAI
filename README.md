@@ -5,7 +5,7 @@ A chat app for cricket questions. A Gemini model calls tools over ESPN and Crics
 - **Backend:** FastAPI, LiteLLM (Gemini on Vertex AI), SQLAlchemy and PostgreSQL
 - **Frontend:** React, Vite and Apache ECharts
 - **Voice:** Whisper (whisper.cpp) for dictation, Kokoro for read-aloud
-- **Data:** men's ODI and T20I ball-by-ball files from [Cricsheet](https://cricsheet.org), player profiles from ESPN
+- **Data:** men's ODI ball-by-ball files from [Cricsheet](https://cricsheet.org), player profiles from ESPN
 
 ## How a question is answered
 
@@ -20,7 +20,15 @@ Cricket tools: `get_career_stats`, `get_player_data`, `get_match_data`, `get_bat
 
 Chart types: bar, line, scatter, donut, heatmap, bubble, and stacked area/bar, with table and CSV views.
 
-Statistics cover the imported Cricsheet matches only (men's ODI and T20I). They are not official career records, and Tests are excluded.
+Statistics cover the imported Cricsheet matches only (men's ODI matches only). They are not official career records; T20Is and Tests are not included.
+
+## Sample queries
+
+1. `What are Virat Kohli's ODI career runs, average and strike rate?` calls `get_career_stats` and shows totals computed from Cricsheet files.
+2. `Show Virat Kohli's ODI dismissal kinds as a donut chart` calls `get_player_data`, then `create_cricket_chart`.
+3. `Load Cricsheet match 1022353 and show its run components by over` calls `get_match_data`, then `create_cricket_chart` (stacked area).
+
+Follow-ups such as `Now show the same as a bar chart` reuse the conversation's saved data.
 
 ## Voice models
 
@@ -56,8 +64,8 @@ uv sync
 bash scripts/data.sh migrate
 
 # 4. Cricket data (about 30 MB download; the import takes several minutes)
-bash scripts/data.sh download --formats odi t20i
-bash scripts/data.sh import --formats odi t20i
+bash scripts/data.sh download --formats odi
+bash scripts/data.sh import --formats odi
 
 # 5. Frontend
 (cd frontend && npm ci && npm run build)

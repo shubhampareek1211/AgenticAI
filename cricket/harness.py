@@ -15,7 +15,7 @@ from tools import TOOLS, run_tool
 
 SYSTEM_PROMPT = (
     "You are a helpful cricket assistant. Use get_career_stats for career totals and past runs, "
-    "and get_player_data for ODI/T20I player facts "
+    "and get_player_data for ODI player facts "
     "and create_cricket_chart with a returned dataset_id when the user requests a graph. "
     "For Manhattan, worm, run-component area, or partnership charts, use get_match_data "
     "to select one imported match "
@@ -27,7 +27,7 @@ SYSTEM_PROMPT = (
     "five innings and sixty legal balls per player. "
     "Worm and Manhattan over totals exclude pre/post innings penalty runs. "
     "Rolling baselines cover available imported matches, not complete official careers. "
-    "Use analyze_wicket_response with a resolved player_id and ODI/T20I format when asked "
+    "Use analyze_wicket_response with a resolved player_id and ODI format when asked "
     "about scoring around teammate wickets. Its before/after comparison is descriptive, "
     "not causal. Below 10 eligible events, say insufficient sample and do not infer direction. "
     "Use only supported chart combinations, do not invent chart values, and do not "

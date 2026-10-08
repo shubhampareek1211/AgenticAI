@@ -14,6 +14,7 @@ import requests
 from cricket.results import error_result
 from cricket.sources import FORMAT_FILES, SOURCE_URLS
 
+ODI_ONLY = {"odi": FORMAT_FILES["odi"]}
 CACHE_DIR = Path(tempfile.gettempdir()) / "cricsheet-cache"
 CACHE_SECONDS = 24 * 3600
 ESPN_SEARCH_URL = "https://site.web.api.espn.com/apis/common/v3/search"
@@ -146,7 +147,7 @@ def _load() -> tuple[dict, list[dict]]:
     with _lock:
         if _state["stats"] is None or time.time() - _state["loaded_at"] > CACHE_SECONDS:
             stats: dict = {}
-            for fmt, name in FORMAT_FILES.items():
+            for fmt, name in ODI_ONLY.items():
                 _aggregate(_fetch(name), stats, fmt)
             text = _fetch("people.csv").read_text(encoding="utf-8")
             _state.update(
@@ -207,9 +208,9 @@ def _summary(values: dict) -> dict:
 
 
 def get_career_stats(player_name: str, format: str | None = None) -> dict:
-    """Return ODI/T20I career statistics for one player, computed live from Cricsheet files."""
-    if format not in (None, "odi", "t20i"):
-        return error_result("invalid_arguments", "Format must be odi or t20i.")
+    """Return ODI career statistics for one player, computed live from Cricsheet files."""
+    if format not in (None, "odi"):
+        return error_result("invalid_arguments", "Only ODI matches are supported.")
     try:
         stats, people = _load()
     except (requests.RequestException, OSError, zipfile.BadZipFile, ValueError):
@@ -241,7 +242,7 @@ def get_career_stats(player_name: str, format: str | None = None) -> dict:
     ]
     matches = narrowed or exact or matches
     if not matches:
-        return error_result("player_not_found", "No ODI/T20I player matches that name.")
+        return error_result("player_not_found", "No ODI player matches that name.")
     if len(matches) > 1:
         result = error_result("ambiguous_player", "Ask the user which player they mean.")
         result["data"] = {
@@ -252,7 +253,7 @@ def get_career_stats(player_name: str, format: str | None = None) -> dict:
         }
         return result
     person = matches[0]
-    formats = [format] if format else ["odi", "t20i"]
+    formats = ["odi"]
     data = {
         "player": {"name": person["name"], "unique_name": person["unique_name"]},
         "formats": {
@@ -270,7 +271,7 @@ def get_career_stats(player_name: str, format: str | None = None) -> dict:
             for fmt in formats
         ],
         "coverage": {
-            "scope": "Men's ODI/T20I matches in Cricsheet; excludes Tests and domestic cricket.",
+            "scope": "Men's ODI matches in Cricsheet; excludes T20Is, Tests and domestic cricket.",
             "complete_history": False,
         },
     }
