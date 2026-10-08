@@ -1,13 +1,16 @@
 # Cricket Analyst Agent — Current State
 
-Last updated: 2026-10-07 (two-service Columbia pilot deployment)
+Last updated: 2026-10-07 (Columbia pilot and GitHub deployment)
 
 The user clarified that every database operation must use the hosted data
 endpoint. The public Cloud Run gateway and private backend are deployed in
 `phonic-weaver-475017-n1`; the backend alone connects to restricted Cloud SQL.
 Firebase recognizes the public callback domain, and the full Python and
-frontend test suites pass. The cricket source import, signed-in cloud checks,
-and separate GitHub pilot trigger are the current release work. See
+frontend test suites pass. Protected-branch GitHub Actions deployment has
+passed and updates only the pilot gateway and backend. The cricket source
+import and signed-in cloud checks remain release work. The user declined a
+monthly budget alert; instance limits remain configured but are not a spending
+ceiling. See
 [deploy/PILOT_RELEASE.md](deploy/PILOT_RELEASE.md) for the live checklist and
 [deploy/PILOT_CD.md](deploy/PILOT_CD.md) for service revisions. The entries below
 are historical phase records, including superseded open questions.

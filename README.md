@@ -45,9 +45,9 @@ mailbox to evaluate the deployed pilot.
 The root [submission.json](submission.json) names the deployed HTTPS website
 and sole author, `sp4553@columbia.edu`. Run
 `python3 scripts/validate_submission.py` to check its format; that validator
-does not prove the website works for a signed-in grader. The GitHub
-`pilot-release` branch is intended to deploy this website continuously after
-the live release checks pass. Keep the Cloud Run website available until grades
+does not prove the website works for a signed-in grader. The protected GitHub
+`pilot-release` branch now deploys the website through keyless GitHub Actions;
+its first build and deployment passed. Keep the Cloud Run website available until grades
 are released. Read [BUILD_PLAN.md](BUILD_PLAN.md), [STATE.md](STATE.md), and
 [HANDOFF.md](HANDOFF.md) for implementation and project state.
 

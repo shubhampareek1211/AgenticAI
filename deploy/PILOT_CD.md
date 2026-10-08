@@ -12,14 +12,14 @@ remain separate. The private Whisper and Kokoro worker images are unchanged.
 
 - Project `phonic-weaver-475017-n1`, Cloud Run region `us-central1`.
 - Public gateway: `agenticai-columbia-pilot`, revision
-  `agenticai-columbia-pilot-00002-tz8`,
+  `agenticai-columbia-pilot-00003-rd9`,
   <https://agenticai-columbia-pilot-3d4n5heeaq-uc.a.run.app>. Image digest:
-  `sha256:955044e722cb6e873180c889e995ee2118979e1696ef530a9b4f7dca483948d7`.
+  `sha256:00b68bb2d3fb5d22a9d5e2a7077dbb997b95e414bb0645ba748bd83246993374`.
   It runs as `agenticai-gateway-pilot@phonic-weaver-475017-n1.iam.gserviceaccount.com`
   with concurrency 2, maximum instances 2, and minimum instances 0.
 - Private backend: `agenticai-data-pilot`, revision
-  `agenticai-data-pilot-00002-tht`. Image digest:
-  `sha256:946950638ca49102885bfd24b073f114fd2b5d82b8412701d30a9cc14a5a990a`.
+  `agenticai-data-pilot-00003-p44`. Image digest:
+  `sha256:313d2465554b48da7a31761f31802bc7befd36c10134233d99174028bddf7e34`.
   It runs as `agenticai-app-pilot@phonic-weaver-475017-n1.iam.gserviceaccount.com`
   with concurrency 4, maximum instances 2, and minimum instances 0. Cloud SQL
   is attached to this service only.
@@ -30,19 +30,21 @@ remain separate. The private Whisper and Kokoro worker images are unchanged.
   include the public gateway host.
 - The existing Cloud Build trigger is in `europe-west1`; it builds and deploys
   `agenticai-git` from `gemini-test-project-1`. It is not a pilot trigger.
-- The pilot images were built from the local checkout and deployed by digest.
-  The public gateway currently returns `200` for `/health`, `/`, and
+- GitHub Actions [run 37704824785](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37704824785)
+  completed in 2m49s; all steps passed. It built both images from the
+  `pilot-release` branch and deployed those immutable digests to the two pilot
+  services. The public gateway previously returned `200` for `/health`, `/`, and
   `/auth/config`; an anonymous `/sessions` request and a fake-token
   `/voice/config` request return `401`. Signed-in end-to-end cloud use and
   cricket source import counts still need release-gate verification.
 - A dedicated Workload Identity Federation provider and resource-scoped pilot
-  deployer permissions are configured for GitHub Actions. The workflow is
-  prepared locally but has not yet run from GitHub. The old Cloud Build trigger
-  and `agenticai-git` service remain separate.
+  deployer permissions are configured for GitHub Actions. The old Cloud Build
+  trigger and `agenticai-git-00003-c78` revision remain unchanged.
 - Cloud Logging exclusion `agenticai-pilot-email-link-callbacks` is configured
   to drop gateway Cloud Run request logs for `/auth/finish`, because a synthetic
-  callback probe showed its query string in those logs. Verify the exclusion
-  with a new callback probe; ordinary route request logs should remain enabled.
+  callback probe showed its query string in those logs. A later synthetic
+  probe verified the callback request was excluded while an ordinary request
+  log remained available. The probe value is not recorded here.
 
 ## Cloud SQL configuration and cost
 
@@ -56,8 +58,8 @@ increase, deletion protection, and no regional HA. The instance reports a
 public IPv4 address and no authorized external client networks. Check the
 point-in-time recovery setting separately. A restricted database role and
 Secret Manager connection URL are used by the private backend only. Monitor
-free space against the 10 GiB ceiling and revisit it if imports grow. The shared-core tier has
-no Cloud SQL SLA; this pilot accepts downtime.
+free space against the 10 GiB ceiling and revisit it if imports grow. The
+shared-core tier has no Cloud SQL SLA; this pilot accepts downtime.
 
 At published `us-central1` list rates and 730 hours, instance compute is
 `730 × $0.035 = $25.55/month`; 10 GiB SSD is
@@ -69,7 +71,8 @@ seven full billable copies; measure actual used bytes after import. Network
 egress, Secret Manager, Cloud Run gateway/backend/worker instance time, Gemini,
 Firebase usage beyond allowances, builds, Artifact Registry storage, and logs
 are additional. Both app services run with minimum instances zero;
-instance caps and budget alerts reduce risk but do not guarantee a spend cap.
+instance caps reduce risk but do not guarantee a spend cap. The user chose not
+to configure a budget alert for this pilot.
 Verify the source import and total release cost before inviting users. See
 [Cloud SQL pricing](https://cloud.google.com/sql/pricing?hl=en),
 [instance creation options](https://docs.cloud.google.com/sql/docs/postgres/create-instance),
@@ -83,8 +86,9 @@ unique `backend:$BUILD_ID` and `gateway:$BUILD_ID` tags. The Docker builds run
 frontend tests and produce production assets. Ignored `.local/` credentials and
 recordings are excluded from build context. The backend production Uvicorn
 process disables its own access log so one-time email-link query parameters
-are not written there. The platform request-log exclusion needs a synthetic
-callback verification because the Uvicorn flag does not control platform logs.
+are not written there. The separately configured Cloud Logging exclusion was
+verified with a synthetic callback probe; the Uvicorn flag does not control
+platform request logs.
 
 The current full backend suite passed **246 tests, with one skipped** while
 the database test fixture was available; the frontend suite passed separately.
@@ -154,9 +158,10 @@ the separate legacy branch and service.
 
 The workflow obtains one short-lived token for registry pushes and a fresh
 federated credential for the Cloud Run updates. `gha-creds-*.json` is ignored
-by Git and excluded from Docker build contexts. After a reviewed push to
-`pilot-release`, confirm the GitHub Actions run passed and both new revisions
-contain the recorded digests. Exercise the grader queries in a fresh browser,
+by Git and excluded from Docker build contexts. The first successful GitHub
+deployment was [run 37704824785](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37704824785),
+which completed in 2m49s with every step passing and produced the revisions
+and digests above. Exercise the grader queries in a fresh signed-in browser,
 then verify the legacy service traffic and IAM again. Preserve previous good
 pilot revisions for rollback and keep the pilot running until grades are
 released. GitHub Actions runner time, image storage, and Cloud Run revision

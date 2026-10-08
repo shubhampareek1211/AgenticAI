@@ -7,6 +7,9 @@ the restricted Cloud SQL database. The cricket source import and signed-in
 cloud checks are in progress. Read [deploy/PILOT_RELEASE.md](deploy/PILOT_RELEASE.md)
 and [deploy/PILOT_CD.md](deploy/PILOT_CD.md) first. Entries below this paragraph
 record earlier phases and should be read as historical notes.
+The protected `pilot-release` branch has a passing keyless GitHub Actions
+deployment; only the source import and signed-in cloud verification remain
+before the release gate can be assessed. The user declined a budget alert.
 
 Latest authentication/voice work (2026-10-04): see
 `deploy/FIREBASE_SETUP_2026-10-04.md`. The user approved the exact IAM grants;

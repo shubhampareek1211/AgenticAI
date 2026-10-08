@@ -20,8 +20,8 @@ configuration/cost, and the isolated GitHub continuous deployment procedure.
   `RUNNABLE`, with zonal `db-g1-small`, 10 GiB SSD, seven retained automated
   backups, no automatic storage increase, and deletion protection. Schema
   migration through `0004_voice_daily_usage` has been applied. The cricket
-  source import is still running; the dataset is not yet validated for user
-  answers.
+  source import and resulting table counts are pending verification; the
+  dataset is not yet validated for user answers.
 - Private backend and public gateway revisions are ready. Gateway concurrency
   is 2 and maximum instances 2; backend concurrency is 4 and maximum instances
   2. Both have minimum instances 0. The gateway accepts one transcription
@@ -37,6 +37,14 @@ configuration/cost, and the isolated GitHub continuous deployment procedure.
 - The full backend test suite passed **246 tests, with one skipped**. The
   frontend test suite and production build also passed. These are code/build
   checks, not a signed-in cloud end-to-end test.
+- GitHub Actions [run 37704824785](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37704824785)
+  completed in 2m49s with all steps passing. It built and deployed immutable
+  images to backend revision `agenticai-data-pilot-00003-p44` and gateway
+  revision `agenticai-columbia-pilot-00003-rd9`. The old
+  `agenticai-git-00003-c78` revision was untouched. Image digests are in
+  [PILOT_CD.md](PILOT_CD.md).
+- A synthetic post-propagation probe verified that the Cloud Logging exclusion
+  drops `/auth/finish` request logs while retaining an ordinary request log.
 
 ## Accepted speech baseline
 
@@ -62,18 +70,16 @@ device voice fallback.
    denial, expired/revoked tokens, and worker failure handling.
 3. Test two concurrent users, gateway upload admission and 429/Retry-After,
    oversized/slow uploads, memory under the gateway's two-instance cap,
-   cancellation, and text chat while speech is busy. Check Cloud Run platform
-   request logs for one-time email-link query parameters; disabling Uvicorn
-   access logs does not control platform logs. Confirm both private services
-   reject anonymous calls.
+   cancellation, and text chat while speech is busy. Confirm both private
+   services reject anonymous calls.
 4. Record a working rollback to the previous pilot revisions, confirm
    `agenticai-git` traffic and IAM remain unchanged, and check the total bill
    against the priced pilot estimate. Shared-core Cloud SQL has no SLA; this
-   pilot accepts downtime. Budget alerts and instance caps are safeguards,
-   not guaranteed spending ceilings.
-5. Once the cloud checks pass, commit the intended source, create the separate
-   `pilot-release` GitHub branch and trigger from [PILOT_CD.md](PILOT_CD.md),
-   verify a push builds and updates only the two pilot services, and put the
-   tested gateway URL and every team member's UNI or email in `submission.json`.
-   Confirm graders can use a permitted Columbia mailbox before submitting the
-   URL. Keep the service running until grades are released.
+   pilot accepts downtime. The user declined a budget alert; instance caps
+   are safeguards, not guaranteed spending ceilings.
+5. The `pilot-release` GitHub Actions workflow has successfully built and
+   deployed both pilot services. After the signed-in cloud checks pass, put
+   the tested gateway URL and every team member's UNI or email in
+   `submission.json`. Confirm graders can use a permitted Columbia mailbox
+   before submitting the URL. Keep the service running until grades are
+   released.
