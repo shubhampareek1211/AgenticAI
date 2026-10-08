@@ -1,16 +1,15 @@
-import json
 import uuid
 from datetime import timedelta
 
 from cricket.conversations import ConversationRepository
 from cricket.espn import PlayerResolutionError
-from cricket.harness import SYSTEM_PROMPT, AgentHarness
+from cricket.harness import SYSTEM_PROMPT
 from cricket.ingest import import_archive, import_register
 from cricket.models import Dataset, ExternalPlayerID, utcnow
 from cricket.player_tool import get_player_data
 from tests.conftest import FIXTURES
 from tests.helpers import archive, synthetic_match
-from tests.test_harness import FakeModel, tool_reply
+from tools import TOOLS
 
 
 def seed_player(session, tmp_path):
@@ -18,7 +17,9 @@ def seed_player(session, tmp_path):
     import_archive(session, archive(tmp_path, synthetic_match()), "odi")
 
 
-def test_player_tool_harness_persists_filtered_dataset_and_trace(session, tmp_path, monkeypatch):
+def test_legacy_player_tool_persists_filtered_dataset_but_is_not_advertised(
+    session, tmp_path, monkeypatch
+):
     seed_player(session, tmp_path)
     fetched = []
 
@@ -30,12 +31,9 @@ def test_player_tool_harness_persists_filtered_dataset_and_trace(session, tmp_pa
     repo = ConversationRepository(session, uuid.uuid4())
     repo.create(SYSTEM_PROMPT)
     args = {"player_name": "Virat Kohli", "format": "odi", "start_date": "2026-01-01"}
-    model = FakeModel(tool_reply(json.dumps(args), name="get_player_data"), {"content": "17 runs."})
-    answer, traces = AgentHarness(completion=model).run(repo, "Kohli ODI runs since 2026?")
-
-    assert answer == "17 runs."
+    result = get_player_data(session, repo.session_id, **args)
+    assert "get_player_data" not in {tool["function"]["name"] for tool in TOOLS}
     assert fetched == ["253802"]
-    result = json.loads(traces[0]["result"])
     assert result["ok"] and result["data"]["identity"]["player_id"] == "ba607b88"
     assert result["data"]["stats"]["odi"]["batting"]["runs"] == 17
     assert result["coverage"]["sample_size"] == {"matches": 1, "batting_innings": 1}
@@ -45,7 +43,6 @@ def test_player_tool_harness_persists_filtered_dataset_and_trace(session, tmp_pa
     assert dataset.conversation_id == repo.session_id
     assert dataset.data["innings"][0]["runs"] == 17
     assert repo.transcript()["datasets"] == [str(dataset.id)]
-    assert json.loads(model.requests[1]["messages"][-1]["content"]) == result
 
 
 def test_player_dataset_records_stable_dismissal_kinds_and_excludes_retired_hurt(

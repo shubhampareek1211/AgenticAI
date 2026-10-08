@@ -432,7 +432,9 @@ def test_player_chart_values_come_from_saved_complete_innings(
     assert result["provenance"][1]["provider"] == "cricsheet"
 
 
-def test_chart_is_model_callable_and_trace_stays_compact(session, tmp_path, monkeypatch):
+def test_legacy_chart_result_stays_compact_but_is_not_model_callable(
+    session, tmp_path, monkeypatch
+):
     repo, dataset_id = player_dataset(session, tmp_path, monkeypatch)
     dataset = session.get(Dataset, uuid.UUID(dataset_id))
     dataset.data = {
@@ -441,21 +443,27 @@ def test_chart_is_model_callable_and_trace_stays_compact(session, tmp_path, monk
             {**dataset.data["innings"][0], "match_id": str(number)} for number in range(500)
         ],
     }
-    args = json.dumps(
-        {
-            "dataset_id": dataset_id,
-            "metric": "runs",
-            "group_by": "innings_date",
-            "chart_type": "scatter",
-        }
-    )
-    model = FakeModel(tool_reply(args, name="create_cricket_chart"), {"content": "Chart ready."})
-    response, traces = AgentHarness(completion=model).run(repo, "Graph those scores")
-    assert response == "Chart ready."
-    assert len(traces[0]["result"]) < 2500
-    chart_id = json.loads(traces[0]["result"])["data"]["chart_id"]
+    options = {
+        "dataset_id": dataset_id,
+        "metric": "runs",
+        "group_by": "innings_date",
+        "chart_type": "scatter",
+    }
+    result = create_cricket_chart(session, repo.session_id, **options)
+    assert result["ok"]
+    assert len(json.dumps(result)) < 2500
+    chart_id = result["data"]["chart_id"]
     chart = session.get(ChartSpec, uuid.UUID(chart_id))
     assert len(chart.spec["chart"]["series"][0]["points"]) == 500
+    assert repo.transcript()["charts"] == [chart_id]
+
+    model = FakeModel(
+        tool_reply(json.dumps(options), name="create_cricket_chart"),
+        {"content": "Live ESPN tools cannot make that chart."},
+    )
+    response, traces = AgentHarness(completion=model).run(repo, "Graph those scores")
+    assert response == "Live ESPN tools cannot make that chart."
+    assert json.loads(traces[0]["result"])["error"]["code"] == "unknown_tool"
     assert repo.transcript()["charts"] == [chart_id]
 
 

@@ -92,19 +92,21 @@ def test_match_invalid_filters_and_incomplete_innings(session, tmp_path):
     assert dataset.data["innings"][0]["overs"] == []
 
 
-def test_get_match_data_is_model_callable_and_trace_stays_compact(session, tmp_path):
+def test_legacy_match_result_is_compact_but_not_model_callable(session, tmp_path):
     repo = _session(session, tmp_path)
-    model = FakeModel(
-        tool_reply(json.dumps({"match_id": "990001"}), name="get_match_data"),
-        {"content": "Match data is ready."},
-    )
-    answer, traces = AgentHarness(completion=model).run(repo, "Load match 990001")
-    assert answer == "Match data is ready."
-    assert len(traces) == 1
-    result = json.loads(traces[0]["result"])
+    result = get_match_data(session, repo.session_id, match_id="990001")
     assert result["ok"] and result["data"]["match"]["match_id"] == "990001"
     assert "overs" not in result["data"]
     assert session.get(Dataset, uuid.UUID(result["data"]["dataset_id"])) is not None
+    model = FakeModel(
+        tool_reply(json.dumps({"match_id": "990001"}), name="get_match_data"),
+        {"content": "Live ESPN tools cannot load that archived match."},
+    )
+    answer, traces = AgentHarness(completion=model).run(repo, "Load match 990001")
+    assert answer == "Live ESPN tools cannot load that archived match."
+    assert len(traces) == 1
+    assert json.loads(traces[0]["result"])["error"]["code"] == "unknown_tool"
+    assert session.query(Dataset).count() == 1
 
 
 def test_persisted_match_dataset_creates_manhattan_and_worm(session, tmp_path):

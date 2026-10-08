@@ -1,32 +1,35 @@
 # Cricket Analyst Agent
 
-Cricket Analyst helps fans explore historical ODI and T20I cricket through
-conversation. It calls tools to retrieve imported Cricsheet match data, resolve
-players and ESPN profiles, analyze scoring around teammate wickets, and create
-charts. A weather tool fetches current conditions from Open-Meteo. The
-FastAPI/Gemini agent saves conversations and tool traces; the React interface
-shows those calls beside answers and charts. Match and player totals describe
-the imported sample, not complete official career records or live scores.
+Cricket Analyst uses Gemini and live ESPN cricket tool calls to answer questions
+about players, currently listed matches, scorecards, and batting contributions.
+The FastAPI agent saves conversations and tool traces; the React interface
+shows those calls beside answers. Cricket answers use ESPN responses fetched at
+request time. ESPN's currently exposed match list is not a historical archive,
+and player search and profiles do not establish career statistics. The
+earlier Cricsheet import and chart code remains in the repository but is not
+advertised to the model in ESPN-only mode.
 
 ## Three sample queries for graders
 
-Use the same conversation for a follow-up so the agent can reuse its saved
-dataset. Expand the tool-call details in the interface to inspect the tool
-arguments and results.
+Use the same conversation for follow-ups. Expand the tool-call details in the
+interface to inspect the live ESPN request arguments and results.
 
-1. “Use `get_player_data` for Virat Kohli in ODI cricket. How many matches are
-   covered, and what are the source dates?” Follow up: “Chart his ODI runs by
-   year.” This exercises player lookup, source coverage, saved context, and chart
-   generation.
-2. “Find India vs Pakistan in the 2017 Champions Trophy and draw a worm chart.”
-   This exercises historical match selection and delivery-derived charting.
-3. “Analyze Virat Kohli's ODI scoring around teammate wickets. How many events
-   qualify, what exclusions matter, and can you chart runs per 100 balls before
-   and after?” This exercises the project's custom wicket-response analysis;
-   small samples must be reported as insufficient evidence.
+1. “Search ESPN for Virat Kohli, then fetch the player profile for the matching
+   player ID. Show the name and available profile details, and explain whether
+   this includes career totals.” This exercises two live tool calls and their
+   coverage limits.
+2. “List cricket matches currently exposed by ESPN. Pick one with a scorecard
+   and show its batting and bowling figures, including its league and event
+   IDs.” This exercises live match discovery and `get_espn_scorecard`.
+3. “For the match you just selected, calculate each innings' top-three batter
+   share of listed batter runs. Show the numerator, denominator, and leading
+   batters.” This exercises `analyze_espn_batting_contributions`, the custom
+   scorecard-derived metric.
 
-If a player or match is ambiguous, choose one of the IDs returned by the tool
-and continue in that conversation. Chart prompts require imported match data.
+ESPN may return no listed matches or scorecard for a particular moment. If so,
+the agent should explain the provider coverage and retry with an available
+match. Historical worm charts and wicket-response analysis require Cricsheet
+deliveries and are not part of the ESPN-only tool set.
 
 ## Grader access and deployment status
 
@@ -35,12 +38,14 @@ The pilot website is
 Sign-in accepts verified `@columbia.edu` mailboxes. Its public gateway serves
 the login and sends authenticated requests to a private Cloud Run backend.
 That backend is the only application component with Cloud SQL credentials; all
-conversation, chart, usage, and cricket-data operations go through it. The
-browser retains its session reference only in the URL fragment, and Firebase
+conversation, chart, and usage persistence goes through it. Live ESPN cricket
+calls are made by the private backend. The browser retains its session
+reference only in the URL fragment, and Firebase
 uses in-memory sign-in persistence. The private Whisper and Kokoro workers
-serve speech features through the backend. The source import and live sign-in
-validation are still in progress; course staff need a permitted Columbia
-mailbox to evaluate the deployed pilot.
+serve speech features through the backend. The Cricsheet import was stopped at
+the user's request, with imported rows retained; ESPN-only tool validation and
+live signed-in end-to-end checks are still needed. Course staff need a
+permitted Columbia mailbox to evaluate the deployed pilot.
 
 The root [submission.json](submission.json) names the deployed HTTPS website
 and sole author, `sp4553@columbia.edu`. Run
@@ -128,110 +133,35 @@ advertised schemas before execution, and the loop runs at most five rounds
 Validated domain failures retain their code, message, data, provenance, and
 coverage. Error codes are lowercase identifiers of at most 64 characters;
 messages are nonempty and at most 2,000 characters. Arbitrary exceptions and
-malformed envelopes are sanitized. The weather tool returns `city_not_found`
-for a missing city and `provider_unavailable` for a transport failure.
+malformed envelopes are sanitized. The live ESPN tools return a
+`provider_unavailable` error on upstream failures.
 
-`get_player_data` accepts either `player_name` or a previously returned Cricsheet
-`player_id`, optional `format` (`odi` or `t20i`), and inclusive ISO `start_date` and
-`end_date`. A name matching multiple Register players returns candidate IDs for
-selection. ESPN IDs come only from the Register mapping. Profiles are cached for
-24 hours by default (`PROFILE_CACHE_HOURS`); an outage can reuse a stale profile
-with its original retrieval time. If no profile is available, Cricsheet statistics
-still return with an explicit profile status. The response includes per-format
-batting/bowling totals, covered match and innings counts, source provenance, and
-a session-owned `dataset_id`. Detailed innings rows live in that dataset for
-chart generation. These are **available imported-match totals**, not official
-career totals; super overs and incomplete innings are excluded from aggregates.
+The advertised cricket tools are `find_espn_player` (candidate identities),
+`get_espn_player_profile` (details for a numeric ESPN `player_id`),
+`list_espn_matches` (up to 30 matches in ESPN's current header),
+`get_espn_scorecard` (batting and bowling rows for numeric `league_id` and
+`event_id`), and `analyze_espn_batting_contributions` (top-three batter share
+of listed batter runs for each innings). The last two tools use the same ESPN
+summary endpoint; match IDs can come from `list_espn_matches`. Every result
+reports provenance and coverage. The contribution denominator excludes extras
+and is not a percentage of all team runs. Live matches can have incomplete
+scorecards. These calls do not read the imported cricket tables and do not
+provide career totals or ball-by-ball analysis.
 
-For a local check after importing data, ask in the browser: “Use
-`get_player_data` for Virat Kohli in ODI; show the match sample and source
-coverage.” The `/chat` tool trace contains the structured result, and
-`GET /sessions/{session_id}` lists the created dataset ID. A deterministic
-integration check is `bash scripts/test.sh -q tests/test_player_tool.py`.
+The old Cricsheet-derived `get_player_data`, `get_match_data`,
+`analyze_wicket_response`, and `create_cricket_chart` implementations and
+their tests are retained in the repository for possible later work, but are
+not advertised as tools in ESPN-only mode. Existing saved charts can still be
+read through their conversation endpoint; new ESPN charts are not implemented.
+In the pilot, conversation and chart persistence remains in Cloud SQL behind
+the private backend. To reopen a conversation, use the session reference in
+the URL fragment; the pilot browser does not persist it in local storage.
 
-`create_cricket_chart` accepts a `dataset_id` from this conversation plus
-`chart_type`, `metric`, and `group_by`. The allowed combinations are
-annual `runs`, `batting_average` (runs per dismissal),
-`mean_runs_per_innings`, `runs_per_100_legal_balls`, and `boundaries`
-(fours plus sixes) as a bar or line; plus `runs/innings_date/line`,
-`runs/innings_date/scatter`, and `runs/balls_faced/scatter`. The paired bar views
-`runs_per_100_balls/wicket_phase/bar` and
-`boundary_ball_percentage/wicket_phase/bar` use the saved wicket-response
-dataset. Rolling-form lines use `batting_average/rolling_innings/line` or
-`runs_per_100_legal_balls/rolling_innings/line`, with `window_size` from 3 to 20
-(default 5) and a separate baseline from the same filtered imported matches.
-`dismissals/kind/bar` or `dismissals/kind/donut` groups a player's scoreboard
-dismissals by kind and format.
-Manhattan bars use `runs_per_over/over/bar`; worm lines use
-`cumulative_runs/over/line` from a saved match dataset. That dataset also
-supports `run_components/over/stacked_area` (running, actual boundary runs,
-other batter runs, and extras) and `partnership_runs/stand/stacked_bar` (two
-batters' runs and delivery extras). `get_batter_bowler_data` saves one batter's
-ODI/T20I deliveries for a `runs_per_100_legal_balls/bowler_phase/heatmap`;
-it shows up to ten most-faced bowlers and leaves cells below six legal balls
-blank. `get_squad_comparison` saves one exact team's imported-match ODI/T20I
-aggregates for `batting_average/strike_rate/bubble`, with bubble size from
-legal balls. Qualifying players need five batting innings and sixty legal
-balls; undefined averages remain in the accessible table and do not become
-zeroes. Incompatible choices,
-foreign datasets, and selections
-without complete innings return explicit errors; no chart is saved for them.
-The backend calculates every value from complete saved innings, carries annual
-sample sizes and denominator details, and stores a renderer-independent chart.
-Rates with zero denominators have null values, not fabricated zero rates. The
-tool returns a compact reference to keep model context bounded. React fetches
-the full chart through `GET /sessions/{session_id}/charts/{chart_id}` and renders
-it with Apache ECharts. Existing saved Plotly charts are normalized on read so
-older conversations remain viewable; the historical Plotly bundle and license
-remain in `static/vendor/` for old browser pages during transition. The UI
-shows source, covered dates, sample, and insufficient-data context near charts.
-The legal-ball rate is labeled explicitly and is not presented as an official
-batting strike rate.
-To reopen a saved conversation in another local tab, use
-`http://127.0.0.1:8000/#session=<session_id>`; the page stores the session ID
-locally and removes it from the address after loading.
-
-To try it, ask for a player first, then “Chart his ODI runs by year” in the
-same conversation. Run `bash scripts/test.sh -q tests/test_chart_tool.py` for
-the deterministic chart checks.
-
-`get_match_data` selects one imported ODI/T20I match by Cricsheet `match_id` or
-team/opponent, format, date, year, and event filters. Ambiguous filters return
-candidate IDs instead of choosing a match. It saves a session-owned
-delivery-derived dataset for Manhattan, worm, run-component area, and
-partnership charts. Each chart uses complete regular innings only,
-counts recorded scoreboard wickets, and excludes pre/post innings penalty runs
-from over totals; the chart shows this method and its source. These are
-historical Cricsheet matches, not live scores. Ask, for example, “Find India vs
-Pakistan in the 2017 Champions Trophy and draw a worm chart,” or “Load match
-1022353 and draw partnership contributions.” Run
-`bash scripts/test.sh -q tests/test_match_tool.py` for match selection checks.
-
-`analyze_wicket_response` requires a resolved Cricsheet `player_id` and `format`
-(`odi` or `t20i`); inclusive `start_date` and `end_date` are optional. For each
-teammate dismissal while the selected batter is at the crease, it checks the
-12 legal team deliveries before and after the wicket delivery. The batter must
-remain at the crease throughout, with at least one legal ball faced on each
-side. Incomplete windows or innings, another wicket, missing delivery data,
-leaving the crease, and a side with no faced ball are excluded and counted by
-reason. The saved `wicket_response` dataset contains pooled batter runs, legal
-balls faced, boundary balls, and their before/after rates. Illegal deliveries
-never enter those rates. The result reports candidate and eligible event counts,
-source provenance, date coverage, and selection bias. Fewer than 10 eligible
-events carry an **insufficient sample** label and must not receive a directional
-interpretation. Zero eligible events return null rates and an explicit
-`insufficient_data` chart error. This is a descriptive custom metric, not an
-official statistic or evidence that the dismissal caused a change.
-
-For a local check, ask: “Analyze Virat Kohli's ODI scoring around teammate
-wickets, then chart runs per 100 balls before and after.” Run
-`bash scripts/test.sh -q tests/test_wicket_tool.py` for deterministic window,
-exclusion, aggregation, harness, and chart checks.
-
-The browser first allocates a conversation with `POST /sessions` (201) and saves
-its UUID in session storage **before** sending `/chat`. Allocation saves only the
-initial system message and performs no model/tool work. Direct `/chat` callers
-may still omit `session_id` to create a conversation in the original way.
+The browser first allocates a conversation with `POST /sessions` (201) before
+sending `/chat`. The pilot keeps its UUID in the URL fragment; it does not save
+it to browser storage. Allocation saves only the initial system message and
+performs no model/tool work. Direct `/chat` callers may still omit `session_id`
+to create a conversation in the original way.
 
 `GET /sessions/{session_id}` restores messages and tool traces and returns
 `request_state`: `idle`, `running`, or `interrupted`. The state uses the actual
@@ -276,7 +206,14 @@ mailbox ownership, then binds conversations to the provider UID. Anonymous
 legacy conversations remain inaccessible to pilot users. See
 [pilot release procedure](deploy/PILOT_RELEASE.md) for deployment gates.
 
-## Download and import
+## Historical Cricsheet pipeline (inactive)
+
+The commands in this section are retained for local development and historical
+reproducibility. They are not part of the pilot's ESPN-only request path. The
+Cloud SQL import was stopped on request, and its partial rows were kept without
+deleting conversation data. Do not resume importing for this release.
+
+### Download and import
 
 ```bash
 bash scripts/data.sh download
@@ -325,7 +262,7 @@ bash scripts/data.sh import --formats t20i --match-ids 1041615
 Neither a subset nor all available Cricsheet matches represent complete official
 career records.
 
-## Query and verify
+### Query and verify historical imports
 
 ```bash
 bash scripts/data.sh player --espn-id 253802 --format odi
@@ -404,10 +341,11 @@ Configure Google application-default credentials and your project, then run
 `uv run app.py` and visit `http://localhost:8000`. The model is
 `vertex_ai/gemini-3.5-flash-lite` in `global`. `/chat` returns `response`,
 `session_id`, and tool calls with `name`, `args`, and a JSON-encoded `result`.
-Persistent sessions, six cricket tools, the weather tool, and the React
-interface are implemented. Build `frontend/dist` before starting FastAPI; the
+Persistent sessions, five live ESPN cricket tools, and the React interface are
+implemented. Build `frontend/dist` before starting FastAPI; the
 frontend build is a separate release step. The Columbia pilot website is
-deployed at the URL above; its signed-in cloud workflow is under validation.
+deployed at the URL above; its ESPN-only and signed-in cloud workflow is under
+validation.
 
 ## Local voice dictation
 

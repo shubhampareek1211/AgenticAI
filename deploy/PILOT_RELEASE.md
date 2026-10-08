@@ -19,9 +19,11 @@ configuration/cost, and the isolated GitHub continuous deployment procedure.
 - The Cloud SQL PostgreSQL 16 Enterprise instance `agenticai-pilot-pg16` is
   `RUNNABLE`, with zonal `db-g1-small`, 10 GiB SSD, seven retained automated
   backups, no automatic storage increase, and deletion protection. Schema
-  migration through `0004_voice_daily_usage` has been applied. The cricket
-  source import and resulting table counts are pending verification; the
-  dataset is not yet validated for user answers.
+  migration through `0004_voice_daily_usage` has been applied. At the user's
+  request, the Cricsheet import was stopped and the partial data retained:
+  18,554 Register players, 28,456 external IDs, and no imported matches or
+  deliveries. A signed-in conversation also remains. Those cricket tables are
+  not part of the selected ESPN-only tool path; nothing was deleted.
 - Private backend and public gateway revisions are ready. Gateway concurrency
   is 2 and maximum instances 2; backend concurrency is 4 and maximum instances
   2. Both have minimum instances 0. The gateway accepts one transcription
@@ -45,6 +47,12 @@ configuration/cost, and the isolated GitHub continuous deployment procedure.
   [PILOT_CD.md](PILOT_CD.md).
 - A synthetic post-propagation probe verified that the Cloud Logging exclusion
   drops `/auth/finish` request logs while retaining an ordinary request log.
+- The selected cricket design is now live ESPN tool calls: player search,
+  player profiles, current match listing, scorecards, and a scorecard-derived
+  top-three batting contribution metric. This code change requires a new deployment and
+  signed-in validation; the revisions listed above predate the ESPN switch.
+  ESPN's current header is not a historical archive, and the new tool set
+  offers neither career totals nor ball-by-ball worm or wicket charts.
 
 ## Accepted speech baseline
 
@@ -60,11 +68,14 @@ device voice fallback.
 
 ## Remaining release checks
 
-1. Finish the source import. Verify table counts and representative cricket
-   tool results in Cloud SQL through the private backend; do not import local
-   anonymous conversations as signed-in users' history.
+1. Deploy and verify the ESPN-only code, then exercise all five advertised
+   tools against live ESPN responses through the private backend. Check
+   provenance, empty/ambiguous results, incomplete scorecards, provider
+   failures, and the top-three contribution denominator. Confirm the private
+   backend does not query retained Cricsheet tables for these answers. Do not
+   restart the import or assign anonymous local conversations to pilot users.
 2. Sign in through the public URL with a real verified Columbia mailbox. Test
-   chat, three README grader queries, tool call display, charts, English and
+   chat, three README grader queries, tool call display, English and
    Hindi recording, English read-aloud, refresh/persistence, and a second
    signed-in user. Check anonymous access denial, wrong-user session/chart
    denial, expired/revoked tokens, and worker failure handling.
@@ -83,3 +94,7 @@ device voice fallback.
    `submission.json`. Confirm graders can use a permitted Columbia mailbox
    before submitting the URL. Keep the service running until grades are
    released.
+
+An ESPN scorecard-based chart could be added later, but the course requirements
+do not make a chart a release gate. The retained Cricsheet worm and wicket
+charts require delivery data unavailable from these live ESPN tools.

@@ -24,7 +24,7 @@ class FakeModel:
         return reply(kwargs) if callable(reply) else reply
 
 
-def tool_reply(arguments='{"location":"Delhi"}', name="get_weather", call_id="call1"):
+def tool_reply(arguments='{"query":"Delhi"}', name="find_espn_player", call_id="call1"):
     return {
         "role": "assistant",
         "content": None,
@@ -70,13 +70,13 @@ def test_successful_exchange_and_final_answer_are_persisted(session):
         "{broken",
         "[]",
         "null",
-        '{"location":42}',
-        '{"location":"Delhi","extra":true}',
+        '{"query":42}',
+        '{"query":"Delhi","extra":true}',
         "{}",
-        '{"location":NaN}',
-        '{"location":1e309}',
-        '{"location":"\\ud800"}',
-        '{"location":"\\u0000"}',
+        '{"query":NaN}',
+        '{"query":1e309}',
+        '{"query":"\\ud800"}',
+        '{"query":"\\u0000"}',
     ],
 )
 def test_invalid_arguments_are_traced_without_executing_tools(session, args):
@@ -180,12 +180,12 @@ def test_five_round_limit_persists_all_results_and_final_limit_message(session):
 def test_multiple_calls_preserve_order_and_unique_ids(session):
     repo = repository(session)
     reply = tool_reply(call_id="same")
-    reply["tool_calls"].append(tool_reply('{"location":"Mumbai"}', call_id="same")["tool_calls"][0])
+    reply["tool_calls"].append(tool_reply('{"query":"Mumbai"}', call_id="same")["tool_calls"][0])
     model = FakeModel(reply, {"content": "Done."})
     _, traces = AgentHarness(completion=model, runner=lambda name, args: json.dumps(args)).run(
         repo, "Hi"
     )
-    assert [call["args"]["location"] for call in traces] == ["Delhi", "Mumbai"]
+    assert [call["args"]["query"] for call in traces] == ["Delhi", "Mumbai"]
     assert len({call.model_call_id for call, _ in repo.tool_calls()}) == 2
     assert_paired([m.payload for m in repo.messages()])
 
@@ -211,7 +211,7 @@ def test_oversized_tool_result_preserves_trace_and_rejects_next_model_call(sessi
 def seed_complete_turn(repo, number):
     turn = repo.start_turn(f"Question {number}: Virat Kohli, ODI, ba607b88")
     payload = tool_reply(call_id=f"seed{number}")
-    args = {"location": "Delhi"}
+    args = {"query": "Delhi"}
     calls = repo.begin_exchange(turn, payload, [args])
     repo.finish_tool(
         calls[0],
@@ -347,7 +347,7 @@ def test_short_tool_heavy_conversation_does_not_exhaust_twelve_thousand_tokens(s
     for number in range(4):
         turn = repo.start_turn(f"Question {number}: chart Kohli's ODI runs")
         calls = repo.begin_exchange(
-            turn, tool_reply(call_id=f"chart{number}"), [{"location": "Delhi"}]
+            turn, tool_reply(call_id=f"chart{number}"), [{"query": "Delhi"}]
         )
         repo.finish_tool(
             calls[0],

@@ -20,6 +20,14 @@ beforeEach(() => { window.history.replaceState(null, '', '/'); Element.prototype
 afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals() })
 
 describe('conversation', () => {
+  it('offers live ESPN requests without implying imported match analysis', () => {
+    render(<App />)
+    expect(screen.getByRole('button', { name: /Find Virat Kohli on ESPN/ })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /What cricket matches are on ESPN now/ })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /Analyze the top-three batting contribution/ })).toBeTruthy()
+    expect(screen.queryByText(/Cricsheet|imported Cricsheet sample/)).toBeNull()
+  })
+
   it('restores persisted messages and tool progress by ID', async () => {
     window.history.replaceState(null, '', `/#session=${id}`)
     vi.spyOn(api, 'transcript').mockResolvedValue(transcript('running', [

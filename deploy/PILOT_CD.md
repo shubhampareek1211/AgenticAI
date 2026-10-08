@@ -37,8 +37,9 @@ remain separate. The private Whisper and Kokoro worker images are unchanged.
   `pilot-release` branch and deployed those immutable digests to the two pilot
   services. The public gateway previously returned `200` for `/health`, `/`, and
   `/auth/config`; an anonymous `/sessions` request and a fake-token
-  `/voice/config` request return `401`. Signed-in end-to-end cloud use and
-  cricket source import counts still need release-gate verification.
+  `/voice/config` request return `401`. These are the last verified revisions
+  before the ESPN-only code switch. Signed-in ESPN-tool end-to-end use still
+  needs release-gate verification.
 - A dedicated Workload Identity Federation provider and resource-scoped pilot
   deployer permissions are configured for GitHub Actions. The old Cloud Build
   trigger and `agenticai-git-00003-c78` revision remain unchanged.
@@ -60,7 +61,8 @@ increase, deletion protection, and no regional HA. The instance reports a
 public IPv4 address and no authorized external client networks. Check the
 point-in-time recovery setting separately. A restricted database role and
 Secret Manager connection URL are used by the private backend only. Monitor
-free space against the 10 GiB ceiling and revisit it if imports grow. The
+free space against the 10 GiB ceiling. The Cricsheet import was stopped on
+request, with partial data retained and no match/delivery rows. The
 shared-core tier has no Cloud SQL SLA; this pilot accepts downtime.
 
 At published `us-central1` list rates and 730 hours, instance compute is
@@ -69,13 +71,13 @@ At published `us-central1` list rates and 730 hours, instance compute is
 backups and network. Backup storage is charged by actual retained bytes: one
 GiB of average used backup storage would add
 `730 × $0.000109589 ≈ $0.08/month`. Seven retained backups are not necessarily
-seven full billable copies; measure actual used bytes after import. Network
+seven full billable copies; measure actual used backup bytes. Network
 egress, Secret Manager, Cloud Run gateway/backend/worker instance time, Gemini,
 Firebase usage beyond allowances, builds, Artifact Registry storage, and logs
 are additional. Both app services run with minimum instances zero;
 instance caps reduce risk but do not guarantee a spend cap. The user chose not
 to configure a budget alert for this pilot.
-Verify the source import and total release cost before inviting users. See
+Verify live ESPN tool behavior and total release cost before wider pilot use. See
 [Cloud SQL pricing](https://cloud.google.com/sql/pricing?hl=en),
 [instance creation options](https://docs.cloud.google.com/sql/docs/postgres/create-instance),
 and [Cloud Run connection guidance](https://docs.cloud.google.com/sql/docs/postgres/connect-run).
@@ -116,14 +118,15 @@ sole database client, runs `APP_ENV=pilot` and `DATA_ENDPOINT_MODE=private`,
 and verifies the Firebase token forwarded in `X-Firebase-Authorization`.
 The public gateway has no database credentials. Its `BACKEND_BASE_URL` and
 `BACKEND_AUDIENCE` point to the same private HTTPS origin, and it uses its own
-IAM token to invoke the backend. Verify the final source import status and
-intended table counts before testing cricket answers.
+IAM token to invoke the backend. Cricket answers now use ESPN calls from that
+private backend; the retained partial Cricsheet import is inactive.
 
 The public login shell and callback domain are configured. Verify a real
 Columbia sign-in, anonymous API denial, conversation isolation and persistence,
-three assignment sample queries, visible tool calls, charts, speech, gateway
+three ESPN-only assignment sample queries, visible tool calls, speech, gateway
 overload/cancellation behavior, and rollback before releasing through the
-workflow.
+workflow. An ESPN scorecard-based visualization is optional follow-up work,
+not a course release requirement.
 Confirm the grader has a permitted Columbia mailbox or agree on grader access
 before submitting the URL. Record service revisions, image digests, runtime
 identities, endpoint URL, and rollback revisions. Check that `agenticai-git`

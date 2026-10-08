@@ -231,16 +231,18 @@ def test_wicket_response_validates_identity_format_dates_and_empty_sample(sessio
         assert not analyze_wicket_response(session, repo.session_id, **options)["ok"]
 
 
-def test_wicket_response_runs_through_harness_and_saves_trace(session, tmp_path):
+def test_legacy_wicket_result_persists_but_is_not_model_callable(session, tmp_path):
     repo = prepared(session, tmp_path, match_with_wicket())
+    result = analyze(session, repo)
+    assert result["ok"] and result["coverage"]["eligible_events"] == 1
+    assert repo.transcript()["datasets"] == [result["data"]["dataset_id"]]
     args = json.dumps({"player_id": PLAYER_ID, "format": "odi"})
     model = FakeModel(
         tool_reply(args, name="analyze_wicket_response"),
-        {"content": "One eligible event; insufficient sample."},
+        {"content": "Live ESPN tools cannot analyze ball-by-ball wicket response."},
     )
     answer, traces = AgentHarness(completion=model).run(repo, "How did Kohli respond to wickets?")
-    assert "insufficient sample" in answer
+    assert answer == "Live ESPN tools cannot analyze ball-by-ball wicket response."
     assert traces[0]["name"] == "analyze_wicket_response"
-    result = json.loads(traces[0]["result"])
-    assert result["ok"] and result["coverage"]["eligible_events"] == 1
+    assert json.loads(traces[0]["result"])["error"]["code"] == "unknown_tool"
     assert repo.transcript()["datasets"] == [result["data"]["dataset_id"]]
