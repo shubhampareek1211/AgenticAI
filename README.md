@@ -11,6 +11,8 @@ A chat app for cricket questions. A Gemini model calls tools over ESPN and Crics
 
 https://agenticai-git-3d4n5heeaq-uc.a.run.app, built and deployed from `main` by Cloud Build and backed by Cloud SQL. Sign in with a verified `@columbia.edu` email link. Coverage is men's ODI matches only.
 
+**Expect a delay on the first sign-in.** Cloud Run starts a new instance when the app has been idle, so the first request, and the sign-in email that depends on it, can take up to a minute to arrive. Check spam if it is longer. One instance is kept warm during grading, and later requests are fast. The first voice transcription can also be slower while the Whisper worker loads its model.
+
 ## How a question is answered
 
 The model never computes statistics itself. It chooses tools, the tools return structured results, and the UI shows each call (arguments and raw result) beside the answer.
