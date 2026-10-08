@@ -6,13 +6,13 @@ gateway and private data backend are deployed; only the backend connects to
 the restricted Cloud SQL database. The user then chose ESPN-only live cricket
 tools and stopped the Cricsheet import. Keep committed Cloud SQL data; ODI
 matches and deliveries rolled back, while the Register and a signed-in
-conversation remain. The advertised cricket tools and docs are being changed;
-do not restart the import. Read [deploy/PILOT_RELEASE.md](deploy/PILOT_RELEASE.md)
+conversation remain. Five ESPN-only tools and matching frontend/docs are now
+deployed; signed-in cloud query checks remain. Do not restart the import. Read [deploy/PILOT_RELEASE.md](deploy/PILOT_RELEASE.md)
 and [deploy/PILOT_CD.md](deploy/PILOT_CD.md) first. Entries below this paragraph
 record earlier phases and should be read as historical notes.
 The protected `pilot-release` branch has a passing keyless GitHub Actions
-deployment. ESPN-only tool and UI validation now precede the remaining signed-in
-release checks. The user declined a budget alert.
+deployment. Local ESPN tool, test, and UI validation passed; signed-in cloud
+checks remain. The user declined a budget alert.
 
 Latest authentication/voice work (2026-10-04): see
 `deploy/FIREBASE_SETUP_2026-10-04.md`. The user approved the exact IAM grants;

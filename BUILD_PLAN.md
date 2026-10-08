@@ -1,5 +1,12 @@
 # Cricket Analyst Agent — Build Plan
 
+This is the historical Cricsheet-plus-ESPN build plan. On 2026-10-07 the user
+selected live ESPN-only cricket tools and stopped the Cricsheet import while
+retaining committed Cloud SQL data. The active tool contracts and grader
+queries are in [README.md](README.md); the current release gates are in
+[deploy/PILOT_RELEASE.md](deploy/PILOT_RELEASE.md). The Cricsheet phases below
+are retained for reference and are not instructions to resume importing.
+
 ## 1. Goal
 
 Turn the existing Gemini tool-calling starter into a deployed cricket analysis assistant that:

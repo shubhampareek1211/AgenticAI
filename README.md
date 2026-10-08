@@ -43,8 +43,8 @@ calls are made by the private backend. The browser retains its session
 reference only in the URL fragment, and Firebase
 uses in-memory sign-in persistence. The private Whisper and Kokoro workers
 serve speech features through the backend. The Cricsheet import was stopped at
-the user's request, with imported rows retained; ESPN-only tool validation and
-live signed-in end-to-end checks are still needed. Course staff need a
+the user's request, with imported rows retained; signed-in ESPN tool checks
+through the deployed app are still needed. Course staff need a
 permitted Columbia mailbox to evaluate the deployed pilot.
 
 The root [submission.json](submission.json) names the deployed HTTPS website

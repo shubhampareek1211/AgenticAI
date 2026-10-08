@@ -1,6 +1,6 @@
 # Cricket Analyst Agent — Current State
 
-Last updated: 2026-10-07 (ESPN-only pivot in progress)
+Last updated: 2026-10-07 (ESPN-only pilot deployed)
 
 The user clarified that every database operation must use the hosted data
 endpoint. The public Cloud Run gateway and private backend are deployed in
@@ -11,8 +11,11 @@ passed and updates only the pilot gateway and backend. The user has now chosen
 ESPN-only live cricket tools and explicitly stopped the Cricsheet source import.
 The committed Register remains in Cloud SQL; the unfinished ODI transaction
 rolled back, so match and delivery tables are empty. One signed-in conversation
-and its tool traces remain. Replace the Cricsheet-backed advertised tools,
-frontend claims, and grader queries before treating the pilot as ready. The user
+and its tool traces remain. Five live ESPN tools, matching frontend copy, and
+new grader queries are deployed. Full PostgreSQL-backed tests passed 254/255
+(one skipped), 48 frontend tests and the production build passed, and all five
+ESPN calls passed local live checks. Signed-in cloud queries remain a release
+gate. The user
 declined a monthly budget alert; instance limits remain configured but are not
 a spending ceiling. See [deploy/PILOT_RELEASE.md](deploy/PILOT_RELEASE.md) for the live checklist and
 [deploy/PILOT_CD.md](deploy/PILOT_CD.md) for service revisions. The entries below

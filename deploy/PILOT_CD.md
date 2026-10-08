@@ -12,14 +12,14 @@ remain separate. The private Whisper and Kokoro worker images are unchanged.
 
 - Project `phonic-weaver-475017-n1`, Cloud Run region `us-central1`.
 - Public gateway: `agenticai-columbia-pilot`, revision
-  `agenticai-columbia-pilot-00005-dlx`,
+  `agenticai-columbia-pilot-00007-zgw`,
   <https://agenticai-columbia-pilot-3d4n5heeaq-uc.a.run.app>. Image digest:
-  `sha256:9a78290c6694b31d6cdd493972333f09651a8e428355a61cb545e8d5a0af01ac`.
+  `sha256:3a91152d31972a92a06e1fe4ad75e2d1227748c89640a9752c0d12318f5a4b0f`.
   It runs as `agenticai-gateway-pilot@phonic-weaver-475017-n1.iam.gserviceaccount.com`
   with concurrency 2, maximum instances 2, and minimum instances 0.
 - Private backend: `agenticai-data-pilot`, revision
-  `agenticai-data-pilot-00005-9n5`. Image digest:
-  `sha256:f43fd802751dd97f2aec6758bdf817043319f8929dec1b920fd8ef7e270e41c8`.
+  `agenticai-data-pilot-00007-h7b`. Image digest:
+  `sha256:b66a9c024c67e90a7fad548168ad7d3ebc87fc2411861620ad2322b71266f300`.
   It runs as `agenticai-app-pilot@phonic-weaver-475017-n1.iam.gserviceaccount.com`
   with concurrency 4, maximum instances 2, and minimum instances 0. Cloud SQL
   is attached to this service only.
@@ -32,14 +32,13 @@ remain separate. The private Whisper and Kokoro worker images are unchanged.
   `agenticai-git` from `gemini-test-project-1`. It is not a pilot trigger.
 - `pilot-release` is the GitHub repository default branch. The pilot workflow
   deploys code pushes to that branch and skips documentation-only pushes.
-- GitHub Actions [run 37706091533](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37706091533)
+- GitHub Actions [run 37707987074](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37707987074)
   passed. It built both images from the
   `pilot-release` branch and deployed those immutable digests to the two pilot
-  services. The public gateway previously returned `200` for `/health`, `/`, and
-  `/auth/config`; an anonymous `/sessions` request and a fake-token
-  `/voice/config` request return `401`. These are the last verified revisions
-  before the ESPN-only code switch. Signed-in ESPN-tool end-to-end use still
-  needs release-gate verification.
+  services. The ESPN-only public gateway returns `200` for `/health`, `/`, and
+  `/auth/config`; anonymous session creation and `/voice/config` return `401`,
+  and the private backend returns `403` without IAM. Signed-in ESPN-tool
+  end-to-end use still needs release-gate verification.
 - A dedicated Workload Identity Federation provider and resource-scoped pilot
   deployer permissions are configured for GitHub Actions. The old Cloud Build
   trigger and `agenticai-git-00003-c78` revision remain unchanged.
@@ -164,7 +163,7 @@ the separate legacy branch and service.
 The workflow obtains one short-lived token for registry pushes and a fresh
 federated credential for the Cloud Run updates. `gha-creds-*.json` is ignored
 by Git and excluded from Docker build contexts. The current GitHub
-deployment is [run 37706091533](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37706091533),
+deployment is [run 37707987074](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37707987074),
 which passed and produced the revisions and digests above. Exercise the grader queries in a fresh signed-in browser,
 then verify the legacy service traffic and IAM again. Preserve previous good
 pilot revisions for rollback and keep the pilot running until grades are

@@ -36,21 +36,22 @@ configuration/cost, and the isolated GitHub continuous deployment procedure.
   token from `X-Firebase-Authorization`; the gateway's IAM token occupies the
   upstream `Authorization` header. The public gateway hostname has been added
   to Firebase authorized domains.
-- The full backend test suite passed **246 tests, with one skipped**. The
-  frontend test suite and production build also passed. These are code/build
+- The full backend test suite passed **254 tests, with one skipped**. The
+  frontend suite passed **48 tests** and the production build passed. These are code/build
   checks, not a signed-in cloud end-to-end test.
-- GitHub Actions [run 37706091533](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37706091533)
+- GitHub Actions [run 37707987074](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37707987074)
   passed. It built and deployed immutable images to backend revision
-  `agenticai-data-pilot-00005-9n5` and gateway revision
-  `agenticai-columbia-pilot-00005-dlx`. The old
+  `agenticai-data-pilot-00007-h7b` and gateway revision
+  `agenticai-columbia-pilot-00007-zgw`. The old
   `agenticai-git-00003-c78` revision was untouched. Image digests are in
   [PILOT_CD.md](PILOT_CD.md).
 - A synthetic post-propagation probe verified that the Cloud Logging exclusion
   drops `/auth/finish` request logs while retaining an ordinary request log.
 - The selected cricket design is now live ESPN tool calls: player search,
   player profiles, current match listing, scorecards, and a scorecard-derived
-  top-three batting contribution metric. This code change requires a new deployment and
-  signed-in validation; the revisions listed above predate the ESPN switch.
+  top-three batting contribution metric. All five live endpoint checks passed
+  from this workstation, and the ESPN-only revisions above are deployed.
+  Signed-in cloud tool use remains to be checked.
   ESPN's current header is not a historical archive, and the new tool set
   offers neither career totals nor ball-by-ball worm or wicket charts.
 
@@ -68,8 +69,8 @@ device voice fallback.
 
 ## Remaining release checks
 
-1. Deploy and verify the ESPN-only code, then exercise all five advertised
-   tools against live ESPN responses through the private backend. Check
+1. Exercise all five deployed ESPN tools from a signed-in Columbia browser.
+   Check
    provenance, empty/ambiguous results, incomplete scorecards, provider
    failures, and the top-three contribution denominator. Confirm the private
    backend does not query retained Cricsheet tables for these answers. Do not
