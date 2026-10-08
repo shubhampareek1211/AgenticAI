@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { api } from './api'
+import { loadConfigWithRetry } from './configRetry'
 
 const MAX_UTTERANCE_LENGTH = 220
 
@@ -70,7 +71,9 @@ export function useSpeechPlayback() {
 
   useEffect(() => {
     const controller = new AbortController()
-    void api.ttsConfig(controller.signal).then(config => setGeneratedAvailable(config.enabled && config.languages.includes('en'))).catch(() => setGeneratedAvailable(false))
+    void loadConfigWithRetry(api.ttsConfig, controller.signal)
+      .then(config => { if (!controller.signal.aborted) setGeneratedAvailable(config.enabled && config.languages.includes('en')) })
+      .catch(() => { if (!controller.signal.aborted) setGeneratedAvailable(false) })
     return () => controller.abort()
   }, [])
 

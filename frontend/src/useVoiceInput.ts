@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { api, ApiError, type VoiceConfig } from './api'
+import { loadConfigWithRetry } from './configRetry'
 
 export type VoicePhase = 'idle' | 'requesting_permission' | 'recording' | 'transcribing'
 
@@ -137,7 +138,7 @@ export function useVoiceInput(onTranscript: (text: string) => void) {
 
   useEffect(() => {
     const request = new AbortController()
-    void api.voiceConfig(request.signal).then(value => {
+    void loadConfigWithRetry(api.voiceConfig, request.signal).then(value => {
       if (request.signal.aborted) return
       configRef.current = value
       setConfig(value)

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
-import { api, type Transcription } from './api'
+import { api, ApiError, type Transcription } from './api'
 import { App } from './App'
 
 vi.mock('./ChartCard', () => ({ ChartCard: () => <div>Chart</div> }))
@@ -47,6 +47,15 @@ afterEach(() => {
 })
 
 describe('voice composer', () => {
+  it('restores recording controls after a transient config failure', async () => {
+    const load = vi.spyOn(api, 'voiceConfig')
+      .mockRejectedValueOnce(new ApiError('warming up', 503))
+      .mockResolvedValue({ enabled: true, max_duration_seconds: 60, max_upload_bytes: 8388608, languages: ['en'] })
+    render(<App />)
+    expect(await screen.findByRole('button', { name: 'Record a question' })).toBeTruthy()
+    expect(load).toHaveBeenCalledTimes(2)
+  })
+
   it('keeps the draft, blocks chat during voice work, and sends only after editing', async () => {
     const transcribe = vi.spyOn(api, 'transcribe').mockResolvedValue(result('by season'))
     const allocate = vi.spyOn(api, 'allocate').mockResolvedValue('11111111-1111-4111-8111-111111111111')

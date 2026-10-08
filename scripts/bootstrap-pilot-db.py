@@ -400,8 +400,10 @@ def migrate_and_import(password: str, source_dir: Path) -> dict[str, int]:
         env,
     )
     after = table_counts(password)
-    if any(after[name] != before[name] for name in PRIVATE_TABLES):
-        raise BootstrapError("Private application table counts changed during cricket import.")
+    # The deployed application may create conversations while the public
+    # reference-data import runs. Growth is legitimate; a decrease is not.
+    if any(after[name] < before[name] for name in PRIVATE_TABLES):
+        raise BootstrapError("Private application table counts decreased during cricket import.")
     if any(after[name] == 0 for name in ("players", "matches", "deliveries")):
         raise BootstrapError("Cricket import did not populate required reference tables.")
     return after

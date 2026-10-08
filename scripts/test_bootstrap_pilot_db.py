@@ -46,7 +46,7 @@ def test_source_manifest_rejects_non_cricsheet_provenance(tmp_path, monkeypatch)
         bootstrap.source_manifest(tmp_path)
 
 
-def test_import_uses_public_archives_and_detects_private_writes(tmp_path, monkeypatch):
+def test_import_uses_public_archives_and_preserves_private_rows(tmp_path, monkeypatch):
     (tmp_path / "a").write_text("stub")
     monkeypatch.setattr(bootstrap, "ROOT", tmp_path)
     (tmp_path / ".venv/bin").mkdir(parents=True)
@@ -72,7 +72,14 @@ def test_import_uses_public_archives_and_detects_private_writes(tmp_path, monkey
 
     values = iter((before, dict(after, conversations=1)))
     monkeypatch.setattr(bootstrap, "table_counts", lambda password: next(values))
-    with pytest.raises(bootstrap.BootstrapError, match="Private application table counts"):
+    assert bootstrap.migrate_and_import("secret", tmp_path)["conversations"] == 1
+
+    existing = dict(before, conversations=2)
+    values = iter((existing, dict(after, conversations=1)))
+    monkeypatch.setattr(bootstrap, "table_counts", lambda password: next(values))
+    with pytest.raises(
+        bootstrap.BootstrapError, match="Private application table counts decreased"
+    ):
         bootstrap.migrate_and_import("secret", tmp_path)
 
 
