@@ -21,8 +21,11 @@ The model never computes statistics itself. It chooses tools, the tools return s
 | --- | --- | --- | --- |
 | 1. Find the data | **Cricket tools** | Career totals, player and match lookups, batter vs bowler matchups, squad comparisons, wicket-response analysis | PostgreSQL (imported [Cricsheet](https://cricsheet.org) ball-by-ball files), ESPN player profiles, Cricsheet files fetched live for career totals |
 | 2. Draw it | **Chart tool** (`create_cricket_chart`) | Builds a chart from a dataset a cricket tool saved in the same conversation. Values are calculated in Python/SQL, then stored as a renderer-independent chart spec | PostgreSQL; rendered in the browser with [Apache ECharts](https://echarts.apache.org) (open source) |
+| 3. Speak and listen | **Voice tools** (`transcribe_audio`, `read_aloud`) | Turns a recorded question into text and reads an answer aloud. Each call appears as a tool card in the chat, like the cricket tools | [Whisper](https://huggingface.co/ggerganov/whisper.cpp) (dictation) and [Kokoro](https://huggingface.co/hexgrad/Kokoro-82M) (read aloud), run as private Cloud Run workers |
 
 Cricket tools: `get_career_stats`, `get_player_data`, `get_match_data`, `get_batter_bowler_data`, `get_squad_comparison`, `analyze_wicket_response`.
+
+Voice tools: `transcribe_audio` (Whisper) and `read_aloud` (Kokoro). They run in the browser flow rather than as model-selected tools, but appear in the chat the same way.
 
 Chart types: bar, line, scatter, donut, heatmap, bubble, and stacked area/bar, with table and CSV views.
 
