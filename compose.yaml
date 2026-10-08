@@ -1,0 +1,20 @@
+# Development-only PostgreSQL 16, bound to loopback. Never use trust auth in production.
+name: cricket-analyst-local
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: cricket
+      POSTGRES_DB: cricket_analyst
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - cricket_pg16:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cricket -d cricket_analyst"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+volumes:
+  cricket_pg16:
