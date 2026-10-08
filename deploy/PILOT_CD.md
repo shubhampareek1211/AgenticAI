@@ -8,18 +8,18 @@ backend is the only app component with a database connection. The existing
 `agenticai-git` service, IAP policy, and trigger on `gemini-test-project-1`
 remain separate. The private Whisper and Kokoro worker images are unchanged.
 
-## First successful GitHub deployment snapshot, 2026-10-07
+## Current deployment, checked 2026-10-07
 
 - Project `phonic-weaver-475017-n1`, Cloud Run region `us-central1`.
 - Public gateway: `agenticai-columbia-pilot`, revision
-  `agenticai-columbia-pilot-00003-rd9`,
+  `agenticai-columbia-pilot-00005-dlx`,
   <https://agenticai-columbia-pilot-3d4n5heeaq-uc.a.run.app>. Image digest:
-  `sha256:00b68bb2d3fb5d22a9d5e2a7077dbb997b95e414bb0645ba748bd83246993374`.
+  `sha256:9a78290c6694b31d6cdd493972333f09651a8e428355a61cb545e8d5a0af01ac`.
   It runs as `agenticai-gateway-pilot@phonic-weaver-475017-n1.iam.gserviceaccount.com`
   with concurrency 2, maximum instances 2, and minimum instances 0.
 - Private backend: `agenticai-data-pilot`, revision
-  `agenticai-data-pilot-00003-p44`. Image digest:
-  `sha256:313d2465554b48da7a31761f31802bc7befd36c10134233d99174028bddf7e34`.
+  `agenticai-data-pilot-00005-9n5`. Image digest:
+  `sha256:f43fd802751dd97f2aec6758bdf817043319f8929dec1b920fd8ef7e270e41c8`.
   It runs as `agenticai-app-pilot@phonic-weaver-475017-n1.iam.gserviceaccount.com`
   with concurrency 4, maximum instances 2, and minimum instances 0. Cloud SQL
   is attached to this service only.
@@ -32,8 +32,8 @@ remain separate. The private Whisper and Kokoro worker images are unchanged.
   `agenticai-git` from `gemini-test-project-1`. It is not a pilot trigger.
 - `pilot-release` is the GitHub repository default branch. The pilot workflow
   deploys code pushes to that branch and skips documentation-only pushes.
-- GitHub Actions [run 37704824785](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37704824785)
-  completed in 2m49s; all steps passed. It built both images from the
+- GitHub Actions [run 37706091533](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37706091533)
+  passed. It built both images from the
   `pilot-release` branch and deployed those immutable digests to the two pilot
   services. The public gateway previously returned `200` for `/health`, `/`, and
   `/auth/config`; an anonymous `/sessions` request and a fake-token
@@ -160,10 +160,9 @@ the separate legacy branch and service.
 
 The workflow obtains one short-lived token for registry pushes and a fresh
 federated credential for the Cloud Run updates. `gha-creds-*.json` is ignored
-by Git and excluded from Docker build contexts. The first successful GitHub
-deployment was [run 37704824785](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37704824785),
-which completed in 2m49s with every step passing and produced the revisions
-and digests above. Exercise the grader queries in a fresh signed-in browser,
+by Git and excluded from Docker build contexts. The current GitHub
+deployment is [run 37706091533](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37706091533),
+which passed and produced the revisions and digests above. Exercise the grader queries in a fresh signed-in browser,
 then verify the legacy service traffic and IAM again. Preserve previous good
 pilot revisions for rollback and keep the pilot running until grades are
 released. GitHub Actions runner time, image storage, and Cloud Run revision

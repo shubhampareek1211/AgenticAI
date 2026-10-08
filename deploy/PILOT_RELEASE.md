@@ -37,10 +37,10 @@ configuration/cost, and the isolated GitHub continuous deployment procedure.
 - The full backend test suite passed **246 tests, with one skipped**. The
   frontend test suite and production build also passed. These are code/build
   checks, not a signed-in cloud end-to-end test.
-- GitHub Actions [run 37704824785](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37704824785)
-  completed in 2m49s with all steps passing. It built and deployed immutable
-  images to backend revision `agenticai-data-pilot-00003-p44` and gateway
-  revision `agenticai-columbia-pilot-00003-rd9`. The old
+- GitHub Actions [run 37706091533](https://github.com/shubhampareek1211/AgenticAI/actions/runs/37706091533)
+  passed. It built and deployed immutable images to backend revision
+  `agenticai-data-pilot-00005-9n5` and gateway revision
+  `agenticai-columbia-pilot-00005-dlx`. The old
   `agenticai-git-00003-c78` revision was untouched. Image digests are in
   [PILOT_CD.md](PILOT_CD.md).
 - A synthetic post-propagation probe verified that the Cloud Logging exclusion
