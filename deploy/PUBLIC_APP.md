@@ -32,4 +32,4 @@ trigger. Do not change the authenticated deployment or its `APP_ENV`.
 Validation: four public-mode checks and Ruff passed. The live smoke check
 creates a public Cloud SQL session and queries a Virat Kohli chart without
 an authentication token, verifies both voice configurations, and checks that
-a known Firebase-owned conversation returns 404 through the public copy.
+a known Firebase-owned conversation returns 403 through the public copy.
