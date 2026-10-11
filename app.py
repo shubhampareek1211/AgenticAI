@@ -272,7 +272,7 @@ def create_app(
             return JSONResponse(
                 status_code=exc.status, content={"detail": exc.detail, "code": exc.code}
             )
-        if request.app.state.auth_settings.enabled:
+        if request.app.state.auth_settings.enabled or request.app.state.auth_settings.mode == "public":
             try:
                 await asyncio.wait_for(
                     asyncio.to_thread(
@@ -366,7 +366,7 @@ def create_app(
 
         try:
             async with service.admit():
-                if request.app.state.auth_settings.enabled:
+                if request.app.state.auth_settings.enabled or request.app.state.auth_settings.mode == "public":
                     try:
                         await asyncio.wait_for(
                             asyncio.to_thread(

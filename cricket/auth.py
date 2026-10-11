@@ -23,8 +23,8 @@ class AuthSettings:
     web_app_id: str = ""
 
     def __post_init__(self):
-        if self.mode not in {"local", "test", "pilot", "production"}:
-            raise ConfigurationError("APP_ENV must be local, test, pilot, or production.")
+        if self.mode not in {"local", "test", "pilot", "production", "public"}:
+            raise ConfigurationError("APP_ENV must be local, test, pilot, production, or public.")
         if self.enabled and not all(
             (self.project_id, self.web_api_key, self.auth_domain, self.web_app_id)
         ):
@@ -40,8 +40,10 @@ class AuthSettings:
     @classmethod
     def from_env(cls):
         mode = os.environ.get("APP_ENV")
-        if os.environ.get("K_SERVICE") and mode not in {"pilot", "production"}:
+        if os.environ.get("K_SERVICE") and mode not in {"pilot", "production", "public"}:
             raise ConfigurationError("Set APP_ENV=pilot or production on Cloud Run.")
+        if mode == "public" and os.environ.get("K_SERVICE") != "agenticai-public":
+            raise ConfigurationError("Public mode is restricted to agenticai-public.")
         return cls(
             mode=mode or "local",
             project_id=os.environ.get("FIREBASE_PROJECT_ID", ""),
@@ -110,6 +112,8 @@ class FirebaseAuthorizer:
             self._verify_claims = verify
 
     def authorize(self, authorization: str | None) -> str | None:
+        if self.settings.mode == "public":
+            return "public:agenticai-public"
         if not self.settings.enabled:
             return None
         scheme, separator, token = (authorization or "").partition(" ")
