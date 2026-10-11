@@ -11,7 +11,11 @@ A chat app for cricket questions. A Gemini model calls tools over ESPN and Crics
 
 https://agenticai-git-3d4n5heeaq-uc.a.run.app, built and deployed from `main` by Cloud Build and backed by Cloud SQL. Sign in with a verified `@columbia.edu` email link. Coverage is men's ODI matches only.
 
-**Expect a delay on the first sign-in.** Cloud Run starts a new instance when the app has been idle, so the first request, and the sign-in email that depends on it, can take up to a minute to arrive. Check spam if it is longer. One instance is kept warm during grading, and later requests are fast. The first voice transcription can also be slower while the Whisper worker loads its model.
+**Signing in:** Check your Spam/Junk folder if the one-time login email does not arrive. If you request more than one link, open only the email from your most recent request and enter the same email address that received it.
+
+If you still do not receive the one-time login email from the app above, use the [no-login Cloud Run app](https://agenticai-public-405277086961.us-central1.run.app). It provides the same cricket tools, charts, and voice integrations without email authentication.
+
+One instance of the app and each voice worker is kept warm. A voice request can still take time to process.
 
 ## How a question is answered
 
